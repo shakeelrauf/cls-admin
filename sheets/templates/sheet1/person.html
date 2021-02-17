@@ -1,0 +1,46 @@
+
+{% extends 'base.html' %}
+{% load cache %}
+{% load static %}
+{% cache 500 content %}
+{% block content %}
+<div style="overflow-x:auto;">
+
+    <h1>{{year}}</h1>
+     <table class="table table-striped table-bordered">
+        <thead>
+          <tr>
+              <th>Invoice #</th>
+              <th>Dispatch #</th>
+              <th>Sales Person</th>
+              <th>Quoted hours</th>
+              <th>Quoted hours bill</th>
+              <th>Actual hours</th>
+              <th>Week</th>
+              <th>Year</th>
+              <th>Month</th>
+              <th>Day</th>
+          </tr>
+        </thead>
+        <tbody>
+        {% for  v in data %}
+        <tr>
+            {% for col in v%}
+                <td>{{col}}</td>
+            {% endfor %}
+        </tr>
+        {% endfor %}
+        </tbody>
+      </table>
+</div>
+  
+{% endblock %}
+
+{% block js %}
+<script>
+    $(document).ready(() =>{
+        $('.table').DataTable();
+    })
+</script>
+{% endblock %}
+{% endcache %}

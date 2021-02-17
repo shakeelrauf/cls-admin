@@ -1,0 +1,88 @@
+
+{% extends 'base.html' %}
+{% load cache %}
+{% load static %}
+{% cache 500 content %}
+{% block content %}
+<div style="overflow-x:auto;">
+   <table class="table table-striped table-bordered">
+    <thead>
+      <tr>
+            {% for col in header %}
+            <th> {{col}}</th>
+            {% endfor %}
+      </tr>
+    </thead>
+    <tbody>
+        {% for row in data %}
+            {% if forloop.counter != 0 %}
+                <tr>
+                    {% for col in row %}
+                        <td>{{col}}</td>
+                    {% endfor %}
+                </tr>
+            {% endif %}
+
+        {% endfor %}
+    </tbody>
+  </table>
+  
+</div>
+  <div class="pagination">
+    {% if current_page > 1 %}
+        <a class="pagination-action" href="?page=1">
+            <i class="fa fa-angle-double-left" aria-hidden="true"></i>
+        </a>
+        <a class="pagination-action" href="?page={{ prev_page }}">
+            <i class="fa fa-angle-left" aria-hidden="true"></i>
+        </a>
+    {% endif %}
+    <span class="pagination-current">{{ current_page }}</span>
+    <span class="pagination-of">of</span>
+    <span class="pagination-total">{{ total_pages_count }}</span>
+    {% if current_page  < total_pages_count %}
+        <a class="pagination-action" href="?page={{ next_page }}">
+            <i class="fa fa-angle-right" aria-hidden="true"></i> </a>
+        <a class="pagination-action" href="?page={{ total_page_count  }}">
+            <i class="fa fa-angle-double-right" aria-hidden="true"></i>
+        </a>
+    {% endif %}
+</div>
+
+{% endblock %}
+{% block js %}
+<script>
+    $(document).ready(()=>{
+        $('.table').DataTable(
+            {
+                "processing": true,
+                "serverSide": true,
+                "ajax": function(data, callback, settings) {
+        // make a regular ajax request using data.start and data.length
+                    $.ajax({
+                        'url': '/sheets/actualvsquoted/json',
+                        data:  {
+                            limit: data.length,
+                            offset: data.start,
+                            dept_name__icontains: data.search.value
+                        },
+                        success: (data) => {
+                            debugger
+                            callback({
+                            recordsTotal: res.meta.total_count,
+                            recordsFiltered: res.meta.total_count,
+                            data: res.objects
+                        });
+
+                        }, 
+                        complete: (data) => {
+                            debugger
+                        }
+                    })
+                },
+            } 
+        )
+    })
+</script>
+{% endblock %}
+{% endcache %}

@@ -1,0 +1,138 @@
+
+{% extends 'base.html' %}
+{% load cache %}
+{% load static %}
+{% cache 500 content %}
+{% block content %}
+<div class="row align-items-center justify-content-center">
+    <h3>Actual Vs Quoted</h3>
+</div>
+    <div class="row">
+        <div class="col-md-4">
+            <table class="sheet0">
+                <thead style="border-bottom: 1px solid black">
+                  <tr>
+                      <td>Year</td>
+                      <td>Quoted</td>
+                      <td>Actual</td>
+                      <td>Ratio</td>
+                  </tr>
+                </thead>
+                <tbody>
+                {% for row in yearly_data %}
+                <tr>
+                    <td style="margin-right: 4px;"><a href="/sheets/actualvsquoted/yearly/{{row | first}}">{{row| first}}</a></td>
+                    <td style="margin-right: 4px;">{{row.1|floatformat }}</td>
+                    <td style="margin-right: 4px;">{{row.2|floatformat}}</td>
+                    <td style="margin-right: 4px;">{{row.3|floatformat}}</td>
+                </tr>
+                {% endfor %}
+                </tbody>
+              </table>
+              <form action="" class="mt-2 text-center">
+                  {{form}}
+              </form>
+            <div class="details-year-table">
+            </div>
+        </div>
+        <div class="col-md-4 col-md-4 align-items-center d-flex" style="flex-direction: column;">
+            <h6 class="mt-3 primary" style="color: #238fd2">Golden Ratio</h6>
+            <table class="border-1" style="border: 1px solid black">
+                <tbody>
+                    <tr>
+                        <td>Estimate/Actual</td>
+                        <td>{{golden_ratio.golden_ratio|floatformat}}</td>
+                    </tr>
+                    
+                    <tr>
+                        <td>Target</td>
+                        <td>{{golden_ratio.target}}</td>
+                    </tr>
+                    
+                    <tr>
+                        <td>Difference</td>
+                        <td>{{golden_ratio.difference }}</td>
+                    </tr>
+                </tbody>
+            </table>
+            <table class="sheet0 mt-2">
+                <tr>
+                  <td></td>
+                    {% for row in yearly_data %}
+                        <td >{{row.0}}</td>
+                    {% endfor %}
+                </tr>
+                <tr>
+                  <td scope="row" style="border-bottom: 1px solid black">PM</td>
+                  <td>%</td>
+                  <td>%</td>
+                  <td>%</td>
+                </tr>
+                <tr>
+                  <td >External</td>
+                  
+                  {% for row in yearly_data %}
+                  <td >{{row.3|floatformat}}</td>
+                {% endfor %}
+                </tr>
+            </table>
+        </div>
+        <div class="col-md-4">
+            <h6>Technicians</h6>
+            <table  class="sheet0">
+                <tr>
+                    <td></td>
+                    
+                    {% for row in years_list %}
+                        <td >{{row}}</td>
+                    {% endfor %}
+                  </tr>
+                  <tr>
+                    <td scope="row" style="border-bottom: 1px solid black">Install Team</td>
+                  </tr>
+                    
+                    {% for row in technicians_list %}
+                    <tr>
+                        <td >{{row.0}}</td>
+                        <td >{{row.1| floatformat}}</td>
+                        <td >{{row.2| floatformat}}</td>
+                        <td >{{row.3| floatformat}}</td>
+                    </tr>
+
+                    {% endfor %}
+            </table>
+        </div>
+    </div>
+
+  
+{% endblock %}
+
+{% block js %}
+<script>
+    $(document).ready(() =>{
+        var token = '{{csrf_token}}';
+        $('.table').DataTable();
+        $('#id_years').on("change", e => {
+            $("#loading").show()
+            getYearlyDataFromServer(e.target.value)
+        });
+        var getYearlyDataFromServer = (year) => {
+            $.ajax({
+                headers: { "X-CSRFToken": token },
+                url: window.location.pathname,
+                type: "POST",
+                data: {year: year.toString()}, 
+                success: res => {
+                    $('.details-year-table').html(res)
+                },
+                complete: () => {
+                    $("#loading").hide()
+                }
+            })
+        }
+        getYearlyDataFromServer("{{first_year}}")
+    })
+</script>
+{% endblock %}
+{% endcache %}
+

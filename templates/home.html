@@ -1,0 +1,10 @@
+
+{% extends 'base.html' %}
+{% load cache %}
+{% load static %}
+{% cache 500 content %}
+{% block content %}
+   <h1>hello world</h1>
+
+{% endblock %}
+{% endcache %}
