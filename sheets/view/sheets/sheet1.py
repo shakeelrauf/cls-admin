@@ -23,15 +23,13 @@ class Sheet1View(TemplateView):
         context["columns"] = data
         return render(request, self.template_name, context=context )
 
-
-
 class Sheet1SummaryView(TemplateView):
     template_name = 'sheet1/summary.html'
     
     def get(self, request, sheet):
         sheet = ActualVsQuoted()
         context = {}
-        years_list = sheet.get_years_list()
+        years_list = sorted(sheet.get_years_list(), reverse=True)
         yearly_data = sheet.get_years_summary_data(years_list)
         technicians_data = sheet.get_technicians_data()
         technicians_list = sheet.shape_technicians_data_to_table(technicians_data, years_list)
@@ -144,6 +142,11 @@ def create_yearly_data(data):
     
     return sorted_data
 
+def get_winner(request, sheet):
+    year = request.POST.get('year')
+    data = ActualVsQuoted().get_winner_of_year(year)
+    return render(request, "partials/get_leader_details.html", context={"values" : data.items()} )
+
 def get_json_sheet(request, sheet):
     offset = int(request.GET['start'])
     limit = int(request.GET['length'])
@@ -161,7 +164,7 @@ def get_json_sheet(request, sheet):
         "data": list_objs,
     }
     return JsonResponse(res, safe=False)
-
+    
 def sort_yearly(data):
     sorted_data = {}
     for i in sorted(data, reverse=True): 

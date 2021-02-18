@@ -1,115 +1,66 @@
+
+
 {% load static %}
 <!DOCTYPE html>
 <html>
   <head>
-      <meta charset="utf-8" />
-      <title>CLS-Site</title>
-      <meta charset="utf-8">
-      <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-      <link href="https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700,800,900" rel="stylesheet">
-		  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
-		  <link rel="stylesheet" href="{% static '/assets/css/style.css'%}">
-      {% block headtag %}
-      {% endblock %}
-      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.2/css/bootstrap.css">
-      <link rel="stylesheet" href="https://cdn.datatables.net/1.10.23/css/dataTables.bootstrap4.min.css">
-      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-      <meta name="generator" content="PhpSpreadsheet, https://github.com/PHPOffice/PhpSpreadsheet">
-      <meta name="author" content="Steve Rilliet - Calgary Lock &amp; Safe" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" type="image/jpg" href="{% static '/assets/images/fav.jpg'%}"/>
+    <title>index</title>
+    <link rel="stylesheet" href="{% static '/assets/vendors/core/core.css'%}">
+    <link rel="stylesheet" href="{% static '/assets/vendors/bootstrap-datepicker/bootstrap-datepicker.min.css'%}">
+    <link rel="stylesheet" href="{% static '/assets/fonts/feather-font/css/iconfont.css'%}">
+    <link rel="stylesheet" href="{% static '/assets/css/styles.css'%}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.2/css/bootstrap.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.23/css/dataTables.bootstrap4.min.css">
+    {% block headtag %}
+    {% endblock %}
   </head>
-  <body>
-    <style>
-      .sheet0 {
-        color: #000000;
-        width: 100%;
-      }
-    </style>
-    <div>
-       <style>
-           #loading {
-               position: fixed;
-               left: 0px;
-               top: 0px;
-               width: 100%;
-               height: 100%;
-               z-index: 9999;
-               background: url("/static/assets/images/loading.gif") 50% 50% no-repeat;
-           }
-       </style>
-       <div id="loading"></div>
-    </div>
-    <main>
-  		<div class="wrapper d-flex align-items-stretch">
-        <nav id="sidebar">
-          <div class="p-4 pt-5">
-            <a href="#" class="img logo rounded-circle mb-5" ></a>
-            <ul class="list-unstyled components mb-5">
-              <li class="active">
-                <a href="#homeSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Sheets</a>
-                <ul class="collapse list-unstyled" id="homeSubmenu">
-                  <li>
-                      <a href="/sheets/actualvsquoted/summary">Sheet 1</a>
-                  </li>
-                  <li>
-                      <a href="#">Home 2</a>
-                  </li>
-                  <li>
-                      <a href="#">Home 3</a>
-                  </li>
-                </ul>
-              </li>
-              <li>
-                  <a href="#">About</a>
-              </li>
-              <li>
-                <a href="#pageSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Pages</a>
-                <ul class="collapse list-unstyled" id="pageSubmenu">
-                  <li>
-                      <a href="#">Page 1</a>
-                  </li>
-                  <li>
-                      <a href="#">Page 2</a>
-                  </li>
-                  <li>
-                      <a href="#">Page 3</a>
-                  </li>
-                </ul>
-              </li>
-              <li>
-                <a href="#">Portfolio</a>
-              </li>
-              <li>
-                <a href="#">Contact</a>
-              </li>
-            </ul>
+  <body class="sidebar-dark">
+    <div class="main-wrapper">
+      {% include 'partials/sidebar.html'%}
 
+      <div class="page-wrapper">
+        {% include 'partials/topbar.html'%}
 
+        <div class="page-content">
+          
+          <div class="d-flex justify-content-between align-items-center flex-wrap grid-margin">
+            <div class="w-100">
+              {% block content %}
+              {% endblock %}
+            </div>
           </div>
-        </nav>
-        <div id="content" class="p-4 p-md-5">
-          <button type="button" id="sidebarCollapse" class="btn btn-primary">
-            <i class="fa fa-bars"></i>
-            <span class="sr-only">Toggle Menu</span>
-          </button>
-          {% block content %}
-          {% endblock %}
+  
         </div>
+  
+        <!-- partial:partials/_footer.html -->
+        
+        <!-- partial -->
+      
       </div>
-    </main>
-    
-    <script src="{% static '/assets/js/jquery.min.js' %}"></script>
-    <script src="{% static '/assets/js/popper.js' %}"></script>
-    <script src="{% static '/assets/js/bootstrap.min.js' %}"></script>
-    <script src="{% static '/assets/js/main.js' %}"></script>
+    </div>
+    <div>
+      <div id="loading"></div>
+
+   </div>
+    <script src="{% static '/assets/vendors/core/core.js' %}"></script>
+    <script src="{% static '/assets/vendors/bootstrap-datepicker/bootstrap-datepicker.min.js' %}"></script>
+	  <script src="{% static '/assets/vendors/feather-icons/feather.min.js' %}"></script>
+	  <script src="{% static '/assets/js/template.js' %}"></script>
+    <script src="{% static '/assets/js/dashboard.js' %}"></script>
+    <script src="{% static '/assets/js/datepicker.js' %}"></script>
+
     <script src='https://cdn.datatables.net/1.10.23/js/jquery.dataTables.min.js'></script>
     <script src='https://cdn.datatables.net/1.10.23/js/dataTables.bootstrap4.min.js'></script>
     <script>
-       $(document).ready(function() {
-           $("#loading").hide();
-       });
+      $(document).ready(function(){
+        $("#loading").hide()
+      })
     </script>
-    
     {% block js %}
     {% endblock %}
   </body>
+  
 </html>

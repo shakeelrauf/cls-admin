@@ -1,0 +1,104 @@
+{% load static %}
+
+<nav class="sidebar">
+    <div class="sidebar-header">
+      <a href="#" class="sidebar-brand">
+        <img src="{%static '/assets/images/logo.jpg'%}" width="140", alt="" />
+      </a>
+      <div class="sidebar-toggler not-active">
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
+    </div>
+    <div class="sidebar-body">
+      <ul class="nav">
+        <li class="nav-item">
+          <a href="dashboard-one.html" class="nav-link">
+            <i class="link-icon" data-feather="users"></i>
+            <span class="link-title">Partners</span>
+          </a>
+        </li>
+        <li class="nav-item nav-category">GM</li>
+        <li class="nav-item">
+          <a href="pages/apps/chat.html" class="nav-link">
+            <i class="link-icon" data-feather="message-square"></i>
+            <span class="link-title">Scorecard</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" data-toggle="collapse" href="#emails" role="button" aria-expanded="false" aria-controls="emails">
+            <i class="link-icon" data-feather="box"></i>
+            <span class="link-title">Dashboard</span>
+            <i class="link-arrow" data-feather="chevron-down"></i>
+          </a>
+          <div class="collapse" id="emails">
+            <ul class="nav sub-menu">
+              <li class="nav-item">
+                <a href="/sheets/actualvsquoted/summary" class="nav-link">Actual Vs Quoted</a>
+              </li>
+            </ul>
+          </div>
+        </li>
+        <li class="nav-item nav-category">PMMS</li>
+
+        <li class="nav-item">
+          <a class="nav-link">
+            <i class="link-icon" data-feather="message-square"></i>
+            <span class="link-title">Scorecard</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link">
+            <i class="link-icon" data-feather="box"></i>
+            <span class="link-title">Dashboard</span>
+          </a>
+        </li>
+
+        <li class="nav-item nav-category">FnA</li>
+
+        <li class="nav-item">
+          <a class="nav-link">
+            <i class="link-icon" data-feather="message-square"></i>
+            <span class="link-title">Scorecard</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link">
+            <i class="link-icon" data-feather="box"></i>
+            <span class="link-title">Dashboard</span>
+          </a>
+        </li>
+
+        <li class="nav-item nav-category">OWL</li>
+
+        <li class="nav-item">
+          <a class="nav-link">
+            <i class="link-icon" data-feather="message-square"></i>
+            <span class="link-title">Scorecard</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link">
+            <i class="link-icon" data-feather="box"></i>
+            <span class="link-title">Dashboard</span>
+          </a>
+        </li>
+        <li class="nav-item nav-category">Technical</li>
+
+        <li class="nav-item">
+          <a class="nav-link">
+            <i class="link-icon" data-feather="message-square"></i>
+            <span class="link-title">Scorecard</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link">
+            <i class="link-icon" data-feather="box"></i>
+            <span class="link-title">Dashboard</span>
+          </a>
+        </li>
+
+      </ul>
+    </div>
+  </nav>

@@ -16,7 +16,7 @@ class ActualVsQuoted():
         for year in years:
             year_data = []
             year_data.append(year)
-            qhrs = df.loc[df['Year'] == year, 'Quoted Hours Qty'].sum()
+            qhrs = df.loc[df['Year'] == year, 'Quoted Hours Billed'].sum()
             ahrs = df.loc[df['Year'] == year, 'Actual Hours'].sum()
             ratio = qhrs /ahrs
             year_data.append(qhrs)
@@ -27,12 +27,20 @@ class ActualVsQuoted():
 
     def get_specific_year_summary_data(self,year):
         df = read_csv(ActualVsQuoted.path)
-        data = df[df['Year'] == int(year)].groupby(['Sales Person']).agg({'Quoted Hours Qty': 'sum', 'Actual Hours': 'sum' })
+        data = df[df['Year'] == int(year)].groupby(['Sales Person']).agg({'Quoted Hours Billed': 'sum', 'Actual Hours': 'sum' })
         data.columns = ['QuotedHours', 'ActualHours']
         data['Ratio'] = data['QuotedHours']/data['ActualHours']
         data = data.replace([np.inf, -np.inf], np.nan)
         return data.sort_values('Ratio', ascending=False).head(4).T.to_dict()
-    
+
+    def get_winner_of_year(self, year): 
+        df = read_csv(ActualVsQuoted.path)
+        data = df[df['Year'] == int(year)].groupby(['Sales Person']).agg({'Quoted Hours Billed': 'sum', 'Actual Hours': 'sum' })
+        data.columns = ['QuotedHours', 'ActualHours']
+        data['Ratio'] = data['QuotedHours']/data['ActualHours']
+        data = data.replace([np.inf, -np.inf], np.nan)
+        return data.sort_values('Ratio', ascending=False).head(1).T.to_dict()
+        
     def get_all_json(self, request):
         order_col = request.GET['order[0][column]']
         order_dir = request.GET['order[0][dir]']

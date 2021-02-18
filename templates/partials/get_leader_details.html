@@ -1,0 +1,24 @@
+{% load static %}
+
+<img src="{% static '/assets/images/trophy.png'%}" alt="" class="trophy">
+<table class="table table-cls table-bordered">
+    <thead>
+        <tr>
+        <td scope="row" style="border-bottom: 1px solid black">Leader</td>
+        <td></td>
+        </tr>
+    </thead>
+    <tr>
+      {% for key, row in values %}
+       <td> {{key}}</td>
+       <td> {{row.Ratio}}</td>
+      {% endfor %}
+    </tr>
+    <tr>
+       <td> Leader Billed Hours</td>
+      {% for key, row in values %}
+        <td>{{row.QuotedHours}}</td>
+      {% endfor %}
+    </tr>
+</table>
+<img src="{% static '/assets/images/trophy.png'%}" alt="" class="trophy">
