@@ -76,6 +76,27 @@
                 {% endfor %}
                 </tr>
             </table>
+            <table class="sheet0 mt-2">
+                <tr>
+                  <td></td>
+                    {% for row in yearly_data %}
+                        <td >{{row.0}}</td>
+                    {% endfor %}
+                </tr>
+                <tr>
+                  <td scope="row" style="border-bottom: 1px solid black">Technicians</td>
+                  <td>%</td>
+                  <td>%</td>
+                  <td>%</td>
+                </tr>
+                <tr>
+                  <td >Install</td>
+                  
+                  {% for row in technicians_average %}
+                    <td >{{row|floatformat}}</td>
+                    {% endfor %}
+                </tr>
+            </table>
         </div>
         <div class="col-md-4">
             <h6>Technicians</h6>
