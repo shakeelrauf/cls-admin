@@ -7,6 +7,7 @@ from django.http import HttpResponse
 from sheets.forms.get_year_data import GetYearData
 from pandas import read_csv
 from utils.sheets.actual_vs_quoted import ActualVsQuoted
+from utils.sheets.process_sheets import ProcessSheets
 import pdb
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 import numpy as np
@@ -165,6 +166,11 @@ def get_json_sheet(request, sheet):
     }
     return JsonResponse(res, safe=False)
     
+def run_script(request):
+    response = ProcessSheets().run_script()
+    return JsonResponse(response, safe=False)
+
+
 def sort_yearly(data):
     sorted_data = {}
     for i in sorted(data, reverse=True): 
