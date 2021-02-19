@@ -165,8 +165,8 @@ def get_json_sheet(request, sheet):
         "data": list_objs,
     }
     return JsonResponse(res, safe=False)
-    
-def run_script(request):
+
+def run_script(request, sheet):
     response = ProcessSheets().run_script()
     return JsonResponse(response, safe=False)
 
