@@ -17,6 +17,7 @@ from django.contrib import admin
 from django.urls import path , include
 
 urlpatterns = [
-        path('sheets/', include('sheets.urls')),
+    path('',include('dashboard.urls')),
+    path('sheets/',include(('sheets.urls','sheets'),namespace="sheets")),
     path('admin/', admin.site.urls),
 ]

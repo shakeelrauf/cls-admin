@@ -1,0 +1,160 @@
+
+{% extends 'base.html' %}
+{% load cache %}
+{% load static %}
+{% cache 500 content %}
+{% block content %} 
+<div class="row">
+<div class="col-md-8">
+    <div class="list list-row block">
+        {% for sheet in sheets %}
+        <div class="list-item row" data-id="19" id="showing_{{sheet.id}}">
+            <div class="col-md-8">
+                <div class="flex"> 
+                    <a href="#" class="item-author text-color" data-abc="true">
+                        {{sheet.display_name}}
+                    </a>
+                </div>
+                <div class="no-wrap">
+                    <div class="item-date text-muted text-sm d-none d-md-block">
+                        {{sheet.updated_at}}
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+            [
+                <a href="{% url 'sheets:sheet_summary' sheet.id %}" >View</a>
+                ]
+            </div>
+        </div>
+        <div class="list-item row" style="background:yellow; display: {{ a|yesno:"block,none" }}" data-id="19" id="loading_{{sheet.id}}" >
+            <div class="col-md-8">
+                <div class="flex"> 
+                    <a href="#" class="item-author text-color" data-abc="true">
+                        {{sheet.display_name}}
+                    </a>
+                </div>
+                <div class="no-wrap">
+                    <div class="item-date text-muted text-sm d-none d-md-block">
+                        {{sheet.updated_at}}
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+            [
+                <a href="javascript:void(0);" onclick="alert('Please wait for the current action to finish.');return false;">View</a>
+                ]
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+    <div class="form-group col-md-4">
+        <form action="" id="filters_form">
+            <label for="sheet">Select Sheet:</label>
+            <select class="form-control" id="sheet">
+                {% for sheet in sheets%}
+                    <option value={{sheet.id}}>{{sheet.display_name}}</option>
+                {% endfor %}
+            </select>
+            <div id="loading_td" style='display: {{running|yesno:"block,none"}}'>
+                <img src="{% static 'assets/images/sheet_loading.gif'%}" alt="">
+            </div>
+            <div id="progress"></div>
+            {% if running %}
+                <input DISABLED id="compile_button" type="button" class="btn btn-primary w-100 mt-2" value="Recompile" onclick="clickOnCompileBtn()" />
+            {% else %}
+                <input id="compile_button" type="button" class="btn btn-primary w-100 mt-2" value="Recompile" onclick="clickOnCompileBtn()" />
+            {% endif %}
+        </form>
+    </div>
+</div>  
+{% endblock %}
+{% block js %}
+    <script>
+        var running = false;
+        var clickOnCompileBtn = () => {
+            if(confirm('Compiling the Sheet  may take a few minutes,\nso please be patient. Proceed?')){
+                genSheet($("#sheet").val());
+                return false;
+            }
+        }
+        {% if running %} 
+            running = true;
+            checkSheetProgress('{{running.id}}');
+        {% endif %}
+        var to;
+        function genSheet(id){
+            if(running){
+                alert('Please wait for the current action to finish.');
+            } else {
+                running = true;
+                document.getElementById('compile_button').disabled = true;
+                $('#showing_' + id).hide();
+                $('#loading_' + id).show();
+                $('#loading_td').show();
+                var sheet = $("#sheet").val();
+                $.ajax({
+                    type: "POST",
+                    headers: { "X-CSRFToken": '{{csrf_token}}' },
+                    url: "/dashboard/run_sheet_script/"+sheet,
+                    dataType: "json",
+                    success: function(r){
+                        if(r.alert){
+                        running = false;
+                        alert(r.alert);
+                        }
+                    },
+                    complete: function() {
+                        if(running){
+                        checkSheetProgress(id);
+                        } else {
+                        window.location.reload(); // only in case of error
+                        }
+
+                    }
+                });
+            }
+        }
+        function checkSheetProgress(id){
+            if(to) clearTimeout(to);
+            if(running) 
+                to = setTimeout("updateSheetProgress('"+id+"');", 3000);
+        }
+        function updateSheetProgress(id){
+            $.ajax({
+                type: "POST",
+                url: "/dashboard/check_script_status",
+                headers: { "X-CSRFToken": '{{csrf_token}}' },
+                dataType: "json",
+                success: function(r){
+                    var id = r.sheet_id;
+                    if(r.status == 'running'){
+                        $('#showing_' + id).hide();
+                        $('#loading_' + id).show();
+                        $('#progress').html(r.elapsed);
+                    } else {
+                        running = false;
+                        $('#progress').html('Done')
+                        $('#showing_' + id).show();
+                        $('#loading_' + id).hide();
+                        document.getElementById('compile_button').disabled = false;
+                        $('#loading_td').hide();
+                    }
+                },
+                error: function(XMLHttpRequest, textStatus, errorThrown) {
+                $('#loading').html('An error has occured. Please refresh the page.')
+                },
+                complete: function() {
+                    if(running){
+                        checkSheetProgress(id);
+                    } else {
+                        window.location.reload(); // only in case of error
+                    }
+
+                }
+            });
+        }
+    </script>
+{% endblock %}
+{% endcache %}

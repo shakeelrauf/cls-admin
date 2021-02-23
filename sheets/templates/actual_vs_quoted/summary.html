@@ -5,8 +5,8 @@
 {% cache 500 content %}
 {% block content %}
     <div class="d-flex mb-3 mb-md-4 justify-content-between">
-        <h4 class=" ">Actual Vs Quoted</h4> 
-        <a  class="" href="/sheets/actualvsquoted">See Full Report</a>
+        <h4 class=" sheet_link" data-id="{{sheet.id}}">{{sheet.display_name}}</h4> 
+        <a  class="" href="/sheets/{{sheet.id}}">See Full Report</a>
     </div>
     <div class="row">
         <div class="col-md-4">

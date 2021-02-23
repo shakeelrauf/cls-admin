@@ -54,13 +54,47 @@
 
     <script src='https://cdn.datatables.net/1.10.23/js/jquery.dataTables.min.js'></script>
     <script src='https://cdn.datatables.net/1.10.23/js/dataTables.bootstrap4.min.js'></script>
+    <link href="https://cdn.jsdelivr.net/gh/Talv/x-editable@develop/dist/bootstrap4-editable/css/bootstrap-editable.css" rel="stylesheet">
+    <link href="https://unpkg.com/bootstrap-table@1.15.4/dist/bootstrap-table.min.css" rel="stylesheet">
+
+    <script src="https://cdn.jsdelivr.net/gh/Talv/x-editable@develop/dist/bootstrap4-editable/js/bootstrap-editable.min.js"></script>
+    <script src="https://unpkg.com/bootstrap-table@1.15.4/dist/bootstrap-table.min.js"></script>
+    <script src="https://unpkg.com/bootstrap-table@1.15.4/dist/extensions/editable/bootstrap-table-editable.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css" integrity="sha512-HK5fgLBL+xu6dm/Ii3z4xhlSUyZgTT9tuc/hSrtw6uzJOvgRr2a9jyxxT1ely+B+xFAmJKVSTbpM/CuL7qxO8w==" crossorigin="anonymous" />
     <script>
+        
       $(document).ready(function(){
         $("#loading").hide()
+        $(".sheet_link").each(function() {
+            var current_element = $(this);
+            var id = $(this).data("id")
+            $(this).editable({
+                event :'dblclick',
+                touch :true,
+                emptyMessage :false,
+                url: '/update_sheet',
+                type: 'text',
+                pk: 1,
+                name: 'display_name',
+                params: function(params) {
+                    params['id'] = id;
+                    return params;
+                },
+                success: function(response, newValue) {
+                  window.location.reload()
+                },
+                validate: function(value) {
+                    if($.trim(value) == '') {
+                        return 'This field is required';
+                    }
+                }
+            });    
+        });
       })
     </script>
     {% block js %}
     {% endblock %}
+
   </body>
   
 </html>

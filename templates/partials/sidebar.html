@@ -34,9 +34,11 @@
           </a>
           <div class="collapse" id="emails">
             <ul class="nav sub-menu">
-              <li class="nav-item">
-                <a href="/sheets/actualvsquoted/summary" class="nav-link">Actual Vs Quoted</a>
-              </li>
+                    {% for sheet in sheets %}
+                        <li class="nav-item ">
+                            <a href="/sheets/{{sheet.id}}/summary" class="nav-link" data-id="{{sheet.id}}">{{sheet.display_name}}</a>
+                        </li>
+                    {% endfor %}
             </ul>
           </div>
         </li>

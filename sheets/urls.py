@@ -1,11 +1,8 @@
 from django.urls import path, include
-from .view.sheets.sheet1 import run_script,get_json_sheet,get_winner, Sheet1View, Sheet1SalesPersonSummaryView, Sheet1SummaryView, Sheet1SummaryYearlyView
+from .view.sheets.sheets import get_json_sheet,get_winner, IndexView, SummaryView
 urlpatterns = [
-    path('<sheet>', Sheet1View.as_view(), name='sheet_no'),
-    path('<sheet>/year/<year>/person/<person>', Sheet1SalesPersonSummaryView.as_view(), name='sheet_no'),
-    path('<sheet>/summary', Sheet1SummaryView.as_view(), name='sheet_no'),
-    path('<sheet>/summary/get_winner', get_winner, name='sheet_no'),
-    path('<sheet>/yearly/<year>', Sheet1SummaryYearlyView.as_view(), name='yearly'),
-    path('<sheet>/json', get_json_sheet),
-    path('<sheet>/run_script', run_script)
+    path('<sheet>', IndexView.as_view(), name='sheet_details'),
+    path('<sheet>/summary', SummaryView.as_view(), name='sheet_summary'),
+    path('<sheet>/summary/get_winner', get_winner, name='sheet_winner'),
+    path('<sheet>/json', get_json_sheet, name='sheet_json'),
 ]

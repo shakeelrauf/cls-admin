@@ -24993,6 +24993,15 @@
       z-index: 9999;
       background: url("/static/assets/images/loading.gif") 50% 50% no-repeat;
   }
+  #loading_td{
+    width: 100%;
+    height: 100%;
+  }
+  #loading_td img{
+    height: 20px;
+    background:yellow;
+    width: 100%;
+  }
 
 .sheet0 {
 color: #000000;
