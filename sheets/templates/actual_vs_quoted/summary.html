@@ -22,7 +22,7 @@
                 <tbody>
                 {% for row in yearly_data %}
                 <tr>
-                    <td style="margin-right: 4px;"><a href="/sheets/actualvsquoted?Year={{row|first}}">{{row| first}}</a></td>
+                    <td style="margin-right: 4px;"><a href="/sheets/{{sheet.id}}?Year={{row|first}}">{{row| first}}</a></td>
                     <td style="margin-right: 4px;">{{row.1|floatformat }}</td>
                     <td style="margin-right: 4px;">{{row.2|floatformat}}</td>
                     <td style="margin-right: 4px;">{{row.3|floatformat}}</td>
