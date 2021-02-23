@@ -32,6 +32,7 @@ class ProcessSheets():
                 elapsed = f"{int(elapsed)} {(  'sec.' if elapsed == 1 else 'secs.')}"
         except:
             status = elapsed = 'completed'
+            sheet_id = 0
         return {"status": status, "elapsed": elapsed, 'pid': pid, "sheet_id" : sheet_id}
     
     def run_script(self, sheet):
