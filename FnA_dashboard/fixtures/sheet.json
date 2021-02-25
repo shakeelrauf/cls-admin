@@ -1,0 +1,16 @@
+[
+    {
+        "fields": {
+          "display_name": "Purchasing Report",
+          "config_name": "purchasing_report",
+          "script_path": "scripts/purchasing_report.py",
+          "csv_path": "csv_files/PurchasingReport.csv",
+          "updated_at": "2021-10-10",
+          "created_at": "2021-10-10",
+          "sheet_type": "FnA",
+          "code": "R-3-A"
+        },
+        "model": "gm_dashboard.sheet",
+        "pk": 2
+    }
+]
