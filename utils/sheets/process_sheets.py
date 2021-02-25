@@ -1,7 +1,7 @@
 from environ import Env
 import django
 django.setup()
-from dashboard.models import Sheet
+from gm_dashboard.models import Sheet
 import yaml
 import os
 import datetime

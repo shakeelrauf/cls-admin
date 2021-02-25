@@ -1,7 +1,7 @@
 from pandas import read_csv
 from itertools import islice
 from numpy import nansum
-from sheets.forms.get_year_data import GetYearData
+from gm_dashboard.forms.get_year_data import GetYearData
 from utils.sheets.actual_vs_quoted import ActualVsQuoted
 from numpy import nanmean
 from utils.server_db import query, csv_report_builder

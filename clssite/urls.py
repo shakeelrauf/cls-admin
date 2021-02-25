@@ -17,7 +17,7 @@ from django.contrib import admin
 from django.urls import path , include
 
 urlpatterns = [
-    path('',include('dashboard.urls')),
-    path('sheets/',include(('sheets.urls','sheets'),namespace="sheets")),
     path('admin/', admin.site.urls),
+    path('gm/',include(('gm_dashboard.urls','gm_dashboard'),namespace="gm") ),
+    path('fna/',include(('FnA_dashboard.urls','FnA_dashboard'),namespace="fna") ),
 ]

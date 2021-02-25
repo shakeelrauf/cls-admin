@@ -38,8 +38,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'sheets',
-    'dashboard'
+    'gm_dashboard',
+    'FnA_dashboard'
 ]
 
 MIDDLEWARE = [
@@ -65,7 +65,8 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
-                'sheets.context_processors.sheets'
+                'gm_dashboard.context_processors.gm_sheets',
+                'gm_dashboard.context_processors.fna_sheets'
             ],
         },
     },

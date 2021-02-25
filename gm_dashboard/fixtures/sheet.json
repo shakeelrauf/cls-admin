@@ -1,0 +1,16 @@
+[
+    {
+        "fields": {
+          "display_name": "Actual Vs Quoted",
+          "config_name": "actual_vs_quoted",
+          "script_path": "scripts/actual_vs_quoted.py",
+          "csv_path": "csv_files/ActualVsQuoted.csv",
+          "updated_at": "2021-10-10",
+          "created_at": "2021-10-10",
+          "sheet_type": "GM",
+          "code": "R-1"
+        },
+        "model": "gm_dashboard.sheet",
+        "pk": 1
+    }
+]

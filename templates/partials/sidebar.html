@@ -34,9 +34,9 @@
           </a>
           <div class="collapse" id="emails">
             <ul class="nav sub-menu">
-                    {% for sheet in sheets %}
+                    {% for sheet in gm_sheets %}
                         <li class="nav-item ">
-                            <a href="/sheets/{{sheet.id}}/summary" class="nav-link" data-id="{{sheet.id}}">{{sheet.display_name}}</a>
+                            <a href="/gm/sheets/{{sheet.id}}/summary" class="nav-link" data-id="{{sheet.id}}">{{sheet.display_name}}</a>
                         </li>
                     {% endfor %}
             </ul>
@@ -56,7 +56,7 @@
             <span class="link-title">Dashboard</span>
           </a>
         </li>
-
+        
         <li class="nav-item nav-category">FnA</li>
 
         <li class="nav-item">
@@ -66,11 +66,24 @@
           </a>
         </li>
         <li class="nav-item">
-          <a class="nav-link">
-            <i class="link-icon" data-feather="box"></i>
-            <span class="link-title">Dashboard</span>
-          </a>
-        </li>
+            <a class="nav-link" data-toggle="collapse" href="#fna" role="button" aria-expanded="false" aria-controls="fna">
+              <i class="link-icon" data-feather="box"></i>
+              <span class="link-title">Dashboard</span>
+              <i class="link-arrow" data-feather="chevron-down"></i>
+            </a>
+            <div class="collapse" id="fna">
+               <span class="link-title">
+                    Purchasing
+               </span> 
+              <ul class="nav sub-menu">
+                {% for sheet in fna_sheets %}
+                    <li class="nav-item ">
+                        <a href="/fna/sheets/{{sheet.id}}" class="nav-link" data-id="{{sheet.id}}">{{sheet.display_name}}</a>
+                    </li>
+                {% endfor %}
+              </ul>
+            </div>
+          </li>
 
         <li class="nav-item nav-category">OWL</li>
 
