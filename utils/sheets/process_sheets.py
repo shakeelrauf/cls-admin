@@ -3,6 +3,8 @@ import django
 django.setup()
 from gm_dashboard.models import Sheet
 import yaml
+import importlib.util
+
 import os
 import datetime
 import pdb
@@ -41,7 +43,11 @@ class ProcessSheets():
             # method_name =  get_method_from_sheet(sheet)
             script_path = env("STORAGE_DIR")+sheet.script_path
             if os.path.exists(script_path):
-                process = mp.Process(target=run_script_method,args=(script_path,sheet.id,))
+                spec = importlib.util.spec_from_file_location("run",script_path)
+                foo = importlib.util.module_from_spec(spec)
+                spec.loader.exec_module(foo)
+                pdb.set_trace()
+                process = mp.Process(target=foo.run,args=(False,))
                 process.start()
                 ProcessSheets().save_process_id({'pid': process.pid,'sheet_id': sheet.id})
         return process_sheet
@@ -57,9 +63,27 @@ class ProcessSheets():
             yaml.dump(data, outfile, default_flow_style=False)
 
 def run_script_method(script_path, sheet_id):
-    exec(open(script_path).read())
+    spec = importlib.util.spec_from_file_location("run",script_path)
+    foo = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(foo)
+    foo.run()
     Sheet.objects.filter(id=sheet_id).update(updated_at=datetime.datetime.now())
 
+def import_file(full_path_to_module):
+
+    try:
+        import os
+        module_dir, module_file = os.path.split(full_path_to_module)
+        module_name, module_ext = os.path.splitext(module_file)
+        save_cwd = os.getcwd()
+        os.chdir(module_dir)
+        module_obj = __import__(module_name)
+        module_obj.__file__ = full_path_to_module
+        globals()[module_name] = module_obj
+        os.chdir(save_cwd)
+    except Exception as e:
+        raise ImportError(e)
+    return module_obj
 def get_method_from_sheet(sheet):
         """Dispatch method name"""
         method_name = 'get_and_save_csv_from_db_' + str(sheet.config_name)

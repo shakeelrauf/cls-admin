@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from django.views.generic import TemplateView
 from django.http import JsonResponse
-from gm_dashboard.models import GMSheet
+from gm_dashboard.models import GMSheet, Sheet
 from utils.sheets.process_sheets import ProcessSheets
 from django.views.decorators.csrf import csrf_exempt
 
@@ -35,5 +35,5 @@ class RunSheetScriptView(TemplateView):
 def update_sheet(request):
     id = int(request.POST['id'])
     value = (request.POST['value'])
-    sheet = GMSheet.objects.filter(id=id).update(display_name=value)
+    sheet = Sheet.objects.filter(id=id).update(display_name=value)
     return JsonResponse(sheet, safe=False)

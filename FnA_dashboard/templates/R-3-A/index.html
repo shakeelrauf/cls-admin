@@ -4,6 +4,10 @@
 {% load static %}
 {% cache 500 content %}
 {% block content %} 
+<div class="d-flex mb-3 mb-md-4 justify-content-between">
+    <h4 class=" sheet_link" data-id="{{sheet.id}}">{{sheet.display_name}}</h4> 
+</div>
+
 <div style="overflow-x:auto;">
    <table class="table table-cls table-bordered" id="example">
        <thead><tr>

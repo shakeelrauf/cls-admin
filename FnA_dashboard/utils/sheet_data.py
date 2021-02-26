@@ -7,14 +7,14 @@ class SheetData(object):
 
     HEADERS = {
         "R-3-A": {
-            "keys" : ["POLed.[Part]", "CAST(POLed.[Desc] AS NVARCHAR(100))","POLed.[Quan]","POLed.[Received]", "PO.[PO]","PO.[PO]","PO.[Date]","PO.[DateReq]", "Vendor.Vendor"],
+            "keys" : ["POLed.[Part]", "CAST(POLed.[Desc] AS NVARCHAR(100))","POLed.[Quan]","POLed.[Received]", "(POLed.[Quan] - POLed.[Received]) ","PO.[PO]","convert(varchar(10), cast(PO.[Date] as date), 101)","convert(varchar(10), cast(PO.[DateReq] as date), 101)", "PO.[ShipName]"],
             "headers" : ["Part Number","Description", "Qty Ordered", "Qty Received", "Balance", "PO Number", "Entry Date", "Expected Date", "Vendor Name"]
         }, 
     }
     QUERIES = {
         "R-3-A": {
-            "data" : f"Select {', '.join(HEADERS['R-3-A']['keys'])} FROM PO INNER  JOIN POLed on PO.[PO] = POLed.[PO] INNER JOIN Vendor on Vendor.Vendor = PO.Vendor",
-            "count" : "Select COUNT(*) FROM PO INNER  JOIN POLed on PO.[PO] = POLed.[PO] INNER JOIN Vendor on Vendor.Vendor = PO.Vendor"
+            "data" : f"Select {', '.join(HEADERS['R-3-A']['keys'])} FROM PO INNER  JOIN POLed on PO.[PO] = POLed.[PO]",
+            "count" : "Select COUNT(*) FROM PO INNER  JOIN POLed on PO.[PO] = POLed.[PO]"
         }
     }
 
