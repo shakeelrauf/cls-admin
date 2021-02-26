@@ -6,12 +6,21 @@ class SheetData(object):
         self.sheet = sheet
 
     HEADERS = {
+        "R-3": {
+            "keys": ["PO.PO", "PO.Date", "Vendor.Company"],
+            "headers": ["PO", "Date", "Vendor Name"]
+        },
         "R-3-A": {
             "keys" : ["POLed.[Part]", "CAST(POLed.[Desc] AS NVARCHAR(100))","POLed.[Quan]","POLed.[Received]", "(POLed.[Quan] - POLed.[Received]) ","PO.[PO]","convert(varchar(10), cast(PO.[Date] as date), 101)","convert(varchar(10), cast(PO.[DateReq] as date), 101)", "PO.[ShipName]"],
             "headers" : ["Part Number","Description", "Qty Ordered", "Qty Received", "Balance", "PO Number", "Entry Date", "Expected Date", "Vendor Name"]
         }, 
+
     }
     QUERIES = {
+        "R-3": {
+            "data" : f"SELECT {', '.join(HEADERS['R-3']['keys'])} FROM PO LEFT JOIN Vendor ON PO.Vendor = Vendor.Vendor",
+            "count" : "SELECT COUNT(*) FROM PO LEFT JOIN Vendor ON PO.Vendor = Vendor.Vendor "
+        },
         "R-3-A": {
             "data" : f"Select {', '.join(HEADERS['R-3-A']['keys'])} FROM PO INNER  JOIN POLed on PO.[PO] = POLed.[PO]",
             "count" : "Select COUNT(*) FROM PO INNER  JOIN POLed on PO.[PO] = POLed.[PO]"
