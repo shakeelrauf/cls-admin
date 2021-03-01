@@ -86,7 +86,7 @@ class ActualVsQuoted():
     def average_of_data(self, data):
         average_array = []
         array = [[],[],[]]  
-        for index in range(1,4):
+        for index in range(1,len(data[0])):
             for row in data:
                 array[index-1].append(row[index])
         for ar in array:
@@ -104,7 +104,7 @@ class ActualVsQuoted():
     def shape_technicians_data_to_table(self, data, years):
         dictionary = data.T.to_dict()
         technicians_data = {}
-        current_year = years[2]
+        current_year = years[len(years)-1]
         sorted_data = {k: v for k, v in sorted(dictionary[current_year].items(), key=lambda item: item[1], reverse=True)}
         top_technicians = list(take(15, sorted_data.items()))
         technicians_data[current_year] = top_technicians
@@ -136,6 +136,8 @@ def take(n, iterable):
     return list(islice(iterable, n))
 
 def Average(lst): 
+    if len(lst) == 0:
+        return 0
     return sum(lst) / len(lst) 
 
 def get_and_save_csv_from_db_actual_vs_quoted():

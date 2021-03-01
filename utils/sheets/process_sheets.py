@@ -4,8 +4,10 @@ django.setup()
 from gm_dashboard.models import Sheet
 import yaml
 import importlib.util
-
+import runpy
 import os
+import psutil
+
 import datetime
 import pdb
 import time
@@ -16,13 +18,12 @@ class ProcessSheets():
     def get_process_id(self):
         a_yaml_file = open(env('STORAGE_DIR')+"sheet.yml")
         parsed_yaml_file = yaml.load(a_yaml_file, Loader=yaml.FullLoader)
-        try:
-            if "pid" in dict(parsed_yaml_file):
-                pid = parsed_yaml_file['pid']
-            else:
-                pid = 0
-            sheet_id = parsed_yaml_file["sheet_id"]
-            os.getpgid(pid)
+        if "pid" in dict(parsed_yaml_file):
+            pid = parsed_yaml_file['pid']
+        else:
+            pid = 0
+        sheet_id = parsed_yaml_file["sheet_id"]
+        if psutil.pid_exists(pid):
             status = 'running'
             elapsed = (datetime.datetime.now() - datetime.datetime.strptime(parsed_yaml_file["started"], '%Y-%m-%d %H:%M:%S.%f')).total_seconds()
             if elapsed > 59:
@@ -32,7 +33,8 @@ class ProcessSheets():
                 elapsed = f"{mins} {('min' if mins == 1  else 'mins.')} {secs} {( 'sec.' if secs == 1 else 'secs.')}"
             else:
                 elapsed = f"{int(elapsed)} {(  'sec.' if elapsed == 1 else 'secs.')}"
-        except:
+    # except:/
+        else:
             status = elapsed = 'completed'
             sheet_id = 0
         return {"status": status, "elapsed": elapsed, 'pid': pid, "sheet_id" : sheet_id}
@@ -42,14 +44,11 @@ class ProcessSheets():
         if process_sheet["status"] == "completed":
             # method_name =  get_method_from_sheet(sheet)
             script_path = env("STORAGE_DIR")+sheet.script_path
+
             if os.path.exists(script_path):
-                spec = importlib.util.spec_from_file_location("run",script_path)
-                foo = importlib.util.module_from_spec(spec)
-                spec.loader.exec_module(foo)
-                pdb.set_trace()
-                process = mp.Process(target=foo.run,args=(False,))
+                process = mp.Process(target=run_script_method,args=(script_path,sheet.id,))
                 process.start()
-                ProcessSheets().save_process_id({'pid': process.pid,'sheet_id': sheet.id})
+                self.save_process_id({'pid': process.pid,'sheet_id': sheet.id})
         return process_sheet
 
     def save_process_id(self, attrs):
@@ -63,10 +62,7 @@ class ProcessSheets():
             yaml.dump(data, outfile, default_flow_style=False)
 
 def run_script_method(script_path, sheet_id):
-    spec = importlib.util.spec_from_file_location("run",script_path)
-    foo = importlib.util.module_from_spec(spec)
-    spec.loader.exec_module(foo)
-    foo.run()
+    runpy.run_path(script_path)
     Sheet.objects.filter(id=sheet_id).update(updated_at=datetime.datetime.now())
 
 def import_file(full_path_to_module):

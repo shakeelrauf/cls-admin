@@ -26,5 +26,33 @@
         },
         "model": "gm_dashboard.sheet",
         "pk": 3
-    }
+    },
+    {
+      "fields": {
+        "display_name": "Stock Vs M/M",
+        "config_name": "StockVsM_M",
+        "script_path": "scripts/StockVsM_M.py",
+        "csv_path": "csv_files/StockVsM_M.csv",
+        "updated_at": "2021-10-10",
+        "created_at": "2021-10-10",
+        "sheet_type": "FnA",
+        "code": "R-3-B"
+      },
+      "model": "gm_dashboard.sheet",
+      "pk": 4
+  },
+  {
+    "fields": {
+      "display_name": "Base Cost = 0",
+      "config_name": "BaseCost=0",
+      "script_path": "scripts/BaseCost.py",
+      "csv_path": "csv_files/BaseCost.csv",
+      "updated_at": "2021-10-10",
+      "created_at": "2021-10-10",
+      "sheet_type": "FnA",
+      "code": "R-3-C"
+    },
+    "model": "gm_dashboard.sheet",
+    "pk": 5
+  }
 ]
