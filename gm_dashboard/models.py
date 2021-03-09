@@ -1,5 +1,6 @@
 from django.db import models
 from os import environ as env
+from datetime import date
 
 class Sheet(models.Model):
     CSV_FILES = [{"display_name": "Actual Vs Quoted", "csv_path": env['STORAGE_DIR'] + 'ActualVSQuoted.csv', "script_path": env['STORAGE_DIR'], "config_name": "actual_vs_quoted"}]
@@ -16,6 +17,9 @@ class Sheet(models.Model):
     ]
     sheet_type = models.CharField(max_length=25, choices=TYPE_CHOICES)
 
+    @property
+    def is_seen_today(self):
+        return date.today() == self.updated_at.date()
 
 class GMManager(models.Manager):
   def get_queryset(self):

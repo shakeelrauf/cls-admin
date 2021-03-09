@@ -1,0 +1,233 @@
+
+{% extends 'base.html' %}
+{% load cache %}
+{% load static %}
+{% cache 500 content %}
+{% block content %} 
+<style>
+    .active{
+        background-color:#1F4E78 !important;
+        color: white;
+    }
+</style>
+<div class="d-flex mb-3 mb-md-4 justify-content-between">
+    <h4 class=" sheet_link" data-id="{{sheet.id}}">{{sheet.display_name}}</h4> 
+</div>
+
+   <table class="table table-cls table-bordered" id="example">
+       <thead><tr>
+           {% for c in columns%}
+           <th>{{c}}</th>
+           {% endfor %}
+       </tr></thead>
+       <tbody></tbody>
+  </table>
+{% endblock %}
+{% block js %}
+<script>
+    var url = "{% url 'fna:server_side_table' sheet.id %}"
+    var token = '{{csrf_token}}';
+
+    $(document).ready(()=>{
+        $('#example thead tr').clone(true).appendTo( '#example thead' );
+        $('#example thead tr:eq(0) th').each( function (i) {
+            var title = $(this).text();
+            $(this).html( '<input type="text" placeholder="Search '+title+'"   id="'+title.split(' ').join('_')+'"/>' );
+    
+            $( 'input', this ).on( 'keyup change', function () {
+                if ( table.column(i).search() !== this.value ) {
+                    table
+                        .column(i)
+                        .search( this.value )
+                        .draw();
+                }
+            } );
+        } );
+        var table = $('#example').DataTable({
+                    processing: true,
+                    serverSide: true,
+                    order: [[3,"desc"]],
+                    "ajax": {
+                        url: url,
+                        type: "GET",
+                    },
+                    
+                    columns: [
+                        {data: 0},
+                        {data: 1},
+                        {data: 2},
+                        {
+                            data: 3, 
+                            render: function ( data, type, row, meta ) {
+                                var todayDate = new Date();
+                                todayDate.setHours(0,0,0,0);
+                                var expectedDate = new  Date(data);
+                                var id = row[0].replaceAll(" ", "_");
+                                var rawId = row[0];
+                                var html = `<div>
+                                                <span id="showDatePicker${id}" class="showDatePicker ${expectedDate <= todayDate ? 'text-danger' :  ''}" data-id="${id}">` + data+`</span>
+                                                <div  class="d-none date-edit-wrapper row col-md-12  align-items-center" data-raw="${rawId}" id="datePickerWrapper${id}" data-id="${id}">
+                                                    <input id="datepicker${id}" class="fllow-up-date form-control col-sm-8" type="text" data-value="${data}"  data-id="${id}"/>
+                                                    <div class="col-sm-4">
+                                                        <button type="submit" class="btn btn-primary btn-sm editable-yes"><i class="fa fa-check" aria-hidden="true"></i></button>
+                                                        <button type="button" class="btn btn-secondary btn-sm editable-no"><i class="fa fa-times" aria-hidden="true"></i></button>
+                                                    </div>
+                                                </div>
+                                            </div>`;
+                                
+                                    return html;
+                            }
+                        },
+                    ],
+                    drawCallback: function(){
+                        editableDate()
+                    },
+                    createdRow: function(row, data, index) {
+                        $(row).addClass("inner-content");
+                        
+                        $(row).attr('id', $.trim(data[0]))
+                        $(row).attr('data-id', $.trim(data[0]))
+                    },
+                    initComplete: res => {
+                        setTimeout(selectSelectedFilters, 500)
+                    }
+                });
+                var editableDate = () =>{
+                    
+                    $(".showDatePicker").each(function() {
+                        var id = $(this).data("id")
+                        $(this).on('click', e => {
+                            $(this).addClass('d-none')
+                            var value = $(this).text()
+                            $("#datePickerWrapper"+id).removeClass('d-none')
+                            $("#datepicker"+id).datepicker({
+                                format: 'yyyy-mm-dd',
+                            })
+                            $("#datepicker"+id).datepicker("setDate", new Date(value))
+                        })
+                    });
+                    $(".editable-yes").each(function()  {
+                        var id = $(this).parent().parent().data("id")
+                        var poId = $(this).parent().parent().data("raw")
+                        $(this).on("click", e => {
+                            var value = $("#datepicker"+id).val()
+                            $.ajax({
+                                headers: { "X-CSRFToken": token },
+                                url: "/fna/update_follow_up_date",
+                                type: "POST",
+                                data: {"po": poId, "followUpDate": value},
+                                success: res => {
+                                    showSuccessMsg(res.msg)
+                                    table.ajax.reload( null, false );
+
+                                }
+                            })
+                        })
+                    })
+                    $(".editable-no").each(function()  {
+                        var id = $(this).parent().parent().data("id")
+                        $(this).on("click", e => {
+                            showText(this, id)
+                        })
+                    })
+                }
+                function showText(that,id){
+                    $(that).parent().parent().addClass('d-none');
+                    $("#showDatePicker"+id).removeClass('d-none')
+                }
+                function format ( d ) {
+                    var id = d[0].split(' ').join('_')
+                    var html = `<div style="position: relative;">
+                            <table cellpadding="5"  cellspacing="0" class=' offlineTable w-100 table-cls table-bordered'>
+                            <thead>
+                                <tr>
+                                    <th>Part</th>
+                                    <th>Desc</th>
+                                    <th>Quan</th>
+                                </tr>
+                            </thead>
+                            <tbody id='tbody${id}'>`
+                                html+= `<tr><td colspan="5" class="text-center"><div class="spinner-border text-secondary" role="status">
+                                        <span class="sr-only">Loading...</span>
+                                        </div></td></tr>
+                                    </tbody></table>
+                                    <div class="close-table-btn" id="close-btn${$.trim(d[0])}"  data-id="${id}">x</div>
+                                    </div>`
+
+                    $.ajax({
+                        url: "/fna/po_r3d_leds/"+$.trim(d[0]),
+                        success: res => {
+                            $("#tbody"+id).empty()
+                            if(res.length == 0){
+                                var rowHtml = `<tr>
+                                    <td colspan="5" class="text-center">
+                                    No Item found
+                                    </td>
+                                </tr>
+                                    `;
+                                $("#tbody"+id).append(rowHtml);
+                            }
+                            res.forEach(element => {
+                                var rowHtml =  `<tr>
+                                        <td>${element[0]}</td>
+                                        <td>${element[1]}</td>
+                                        <td>${element[2]}</td>
+                                    </tr>`;
+                                $("#tbody"+id).append(rowHtml);
+                            });
+                        },
+                    })
+                    return html
+                }
+    
+
+        // Add event listener for opening and closing details
+        $('#example tbody').on('dblclick', 'tr.inner-content', function () {
+            var tr = $(this);
+            var row = table.row( tr );
+            var id =  tr.attr("id")
+            if ( row.child.isShown() ) {
+                // This row is already open - close it
+                row.child.hide();
+                tr.removeClass('shown');
+                tr.removeClass('active');
+            }
+            else {
+                // Open this row
+                var res = format(row.data())
+                row.child( res, ' p-0' ).show();
+                tr.addClass('shown');
+                tr.addClass('active');
+                
+                
+            }
+            $("#close-btn"+id).on('click', e => {
+                    var tr = $("#"+id)
+                    var row = table.row(tr)
+                    row.child.hide();
+                    tr.removeClass('shown');
+                    tr.removeClass('active');
+                })
+                
+        } );
+
+
+       $("#example_filter").empty()
+       var selectSelectedFilters = () => {
+            var vars = {};
+            var parts = window.location.href.replace(/[?&]+([^=&]+)=([^&]*)/gi, function(m,key,value) {
+                vars[key] = value;
+            });
+            for (var key in vars) {
+                if (vars.hasOwnProperty(key)) {
+                        $("#"+key).val(vars[key]);
+                        $("#"+key).trigger("change");
+                }
+            }
+
+            
+       }  
+    })
+</script>
+{% endblock %}
+{% endcache %}

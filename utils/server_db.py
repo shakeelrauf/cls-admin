@@ -23,6 +23,26 @@ def query(sql_string):
     textline = ("Query run times MillSeconds: " + str(querytime))
     #write_log(LogFilePath, textline)
     return sql_result
+
+def update_query(sql_string):
+    t = datetime.now()
+    tmsstart = t.strftime('%f')
+
+    server = r'CLS-SQL1\ESC' 
+    database = 'CLSESC' 
+    username = 'Python' 
+    password = '!j4Steve12' 
+    cnxn = pyodbc.connect('DRIVER={SQL Server};SERVER='+server+';DATABASE='+database+';UID='+username+';PWD='+ password)
+    cursor = cnxn.cursor()
+    sql_result = cursor.execute(sql_string)
+    cnxn.commit()
+    t = datetime.now()
+    tmsstop = t.strftime('%f')
+    querytime = (int(tmsstop) - int(tmsstart))
+    querytime = abs(querytime) / 1000
+    textline = ("Query run times MillSeconds: " + str(querytime))
+    #write_log(LogFilePath, textline)
+    return sql_result
     #------------------------
 #-----------------------
 def csv_report_builder(resultFyle,file_name,CSVList):

@@ -14,24 +14,97 @@
     <h4 class=" sheet_link" data-id="{{sheet.id}}">{{sheet.display_name}}</h4> 
 </div>
 
-   <table class="table table-cls table-bordered" id="example">
+   <table class="table table-cls table-bordered" id="po">
        <thead><tr>
            {% for c in columns%}
            <th>{{c}}</th>
            {% endfor %}
+           <th><input type="checkbox" name="id[]" id="po-select-all"></th>
        </tr></thead>
        <tbody></tbody>
   </table>
 {% endblock %}
+
 {% block js %}
 <script>
+    var poSubmissionArray = []
+
     var url = "{% url 'fna:server_side_table' sheet.id %}"
-    $(document).ready(()=>{
-        $('#example thead tr').clone(true).appendTo( '#example thead' );
-        $('#example thead tr:eq(0) th').each( function (i) {
-            var title = $(this).text();
-            $(this).html( '<input type="text" placeholder="Search '+title+'"   id="'+title.split(' ').join('_')+'"/>' );
+    var submitPosUrl = "{%url 'fna:submit_pos'%}"
+    var token = '{{csrf_token}}';
+
+    var editableColumns = () =>{ 
+        $(".po-edit-int").each(function() {
+            var attribute = $(this).data("attribute")
+            var part = $(this).data("part")
+            var po = $(this).data("po")
+            $(this).editable({
+                event :'click',
+                touch :true,
+                emptyMessage :false,
+                url: '/fna/update_r_3',
+                type: 'number',
+                step: 'any',
+                placement: "top",
+                pk: 1,
+                name: 'display_name',
+                params: function(params) {
+                    params["X-CSRFToken"] = token
+                    params['part'] = part;
+                    params['po'] = po;
+                    params['attribute'] = attribute;
+                    return params;
+                },
+                // success: function(response, newValue) {
+                //     window.location.reload()
+                // },
+                validate: function(value) {
+                    if($.trim(value) == '') {
+                        return 'This field is required';
+                    }
+                }
+            });    
+        });
     
+    }
+
+    $(document).ready(()=>{
+        var editableFields =  () => {
+            $(".editable").each(function() {
+                var current_element = $(this);
+                var id = $(this).data("id")
+                $(this).editable({
+                    event :'click',
+                    touch :true,
+                    emptyMessage :false,
+                    url: '/gm/update_sheet',
+                    type: 'text',
+                    pk: 1,
+                    name: 'display_name',
+                    params: function(params) {
+                        params['id'] = id;
+                        return params;
+                    },
+                    success: function(response, newValue) {
+                    window.location.reload()
+                    },
+                    validate: function(value) {
+                        if($.trim(value) == '') {
+                            return 'This field is required';
+                        }
+                    }
+                });    
+            });
+        }
+        $('#po thead tr').clone(true).appendTo( '#po thead' );
+        $('#po thead tr:eq(0) th').each( function (i) {
+            var title = $(this).text();
+            if(title != ""){
+                $(this).html( '<input type="text" placeholder="Search '+title+'"   id="'+title.split(' ').join('_')+'"/>' );
+            }else{
+                var html = ""
+                $(this).html("<button class='btn btn-primary' id='submitPOs' disabled>Submit</button")
+            }
             $( 'input', this ).on( 'keyup change', function () {
                 if ( table.column(i).search() !== this.value ) {
                     table
@@ -41,22 +114,121 @@
                 }
             } );
         } );
-        var table = $('#example').DataTable({
+
+        var editableFields =  () => {
+            $(".editable").each(function() {
+                var current_element = $(this);
+                var id = $(this).data("id")
+                $(this).editable({
+                    event :'click',
+                    touch :true,
+                    emptyMessage :false,
+                    url: '/gm/update_sheet',
+                    type: 'text',
+                    pk: 1,
+                    name: 'display_name',
+                    params: function(params) {
+                        params['id'] = id;
+                        return params;
+                    },
+                    success: function(response, newValue) {
+                    window.location.reload()
+                    },
+                    validate: function(value) {
+                        if($.trim(value) == '') {
+                            return 'This field is required';
+                        }
+                    }
+                });    
+            });
+        }
+      
+        var table = $('#po').DataTable({
                     processing: true,
                     serverSide: true,
+                    select: {
+                        style:    'os',
+                        selector: 'td:first-child'
+                    },
                     "ajax": {
                         url: url,
                         type: "GET",
                     },
+                    
+                               
+                    'columnDefs': [{
+                        'targets': 3,
+                        'searchable': false,
+                        'orderable': false,
+                        'className': 'dt-body-center',
+                        'render': function (data, type, full, meta){
+                            return '<input type="checkbox" name="id[]" value="' + (full[0]) + '">';
+                        }
+                    }],
+                    columns: [
+                        {data: 0},
+                        {data: 1},
+                        {data: 2},
+                    ],
                     createdRow: function(row, data, index) {
                         $(row).addClass("inner-content");
                         $(row).attr('id', $.trim(data[0]))
                         $(row).attr('data-id', $.trim(data[0]))
+                        $(row).find('td:eq(2)').attr("data-column-name",)
+                        $("#po-select-all").prop("checked", false)
+                        
                     },
-                    initComplete: res => {
+                    drawCallback:  settings => {
+                        poSubmissionArray = []
+                        displaySubmitBtn()
                         setTimeout(selectSelectedFilters, 500)
+                        setTimeout(checkBoxes, 500)
                     }
+
                 });
+                var checkBoxes = ()=>{
+                    $("input[name='id[]']").on('change',e => {
+                        poSubmissionArray = []
+                        table.$('input[type="checkbox"]').each(function(){
+                            // If checkbox doesn't exist in DOM
+                                // If checkbox is checked
+                                if(this.checked){
+                                    poSubmissionArray.push(this.value)
+                                }else{
+                                    const index = poSubmissionArray.indexOf(this.value);
+                                    if (index > -1) {
+                                        poSubmissionArray.splice(index, 1);
+                                    }
+                                }
+                        });
+                        displaySubmitBtn()
+                    })
+                }
+                var displaySubmitBtn = ()  => {
+                    if(poSubmissionArray.length != 0){
+                        $("#submitPOs").attr('disabled', false)
+                    }else{
+                        $("#submitPOs").attr('disabled', true)
+                    }
+                }
+                $("#submitPOs").on("click", function() {
+                    
+                    $.ajax({
+                        headers: { "X-CSRFToken": token },
+                        url: submitPosUrl,
+                        type: 'POST',
+                        data: {"POS": JSON.stringify(poSubmissionArray) },
+                        success: res => {
+                            showSuccessMsg(`Submiting Following POS: ${poSubmissionArray}`)
+                            table.ajax.reload( null, false );
+                        },
+                        error: err => {
+
+                        }
+                    })
+
+                })
+                
                 function format ( d ) {
                     var id = d[0].split(' ').join('_')
                     var html = `<div style="position: relative;">
@@ -79,7 +251,7 @@
                                     </div>`
 
                     $.ajax({
-                        url: "/fna/po_leds/"+$.trim(d[0]),
+                        url: "/fna/po_r3_leds/"+$.trim(d[0]),
                         success: res => {
                             $("#tbody"+id).empty()
                             if(res.length == 0){
@@ -95,23 +267,23 @@
                                 var rowHtml =  `<tr>
                                         <td>${element[0]}</td>
                                         <td>${element[1]}</td>
-                                        <td>${element[2]}</td>
-                                        <td>${element[3]}</td>
-                                        <td>${element[4]}</td>
+                                        <td class='po-edit-int' data-attribute='POLed.[Quan]' data-part='${element[0]}' data-po='${$.trim(d[0])}'>${element[2]}</td>
+                                        <td class='po-edit-int' data-attribute='POLed.[Price]' data-part='${element[0]}' data-po='${$.trim(d[0])}'>${element[3]}</td>
+                                        <td class='po-edit-int'  data-attribute='POLed.[Amount]' data-part='${element[0]}' data-po='${$.trim(d[0])}'>${element[4]}</td>
                                     </tr>`;
                                 $("#tbody"+id).append(rowHtml);
                             });
+                            editableColumns()
                         },
                     })
                     return html
                 }
-            
+        
         // Add event listener for opening and closing details
-        $('#example tbody').on('click', 'tr.inner-content', function () {
+        $('#po tbody').on('dblclick', 'tr.inner-content', function () {
             var tr = $(this);
             var row = table.row( tr );
             var id =  tr.attr("id")
-            debugger
             if ( row.child.isShown() ) {
                 // This row is already open - close it
                 row.child.hide();
@@ -128,7 +300,6 @@
                 
             }
             $("#close-btn"+id).on('click', e => {
-                    debugger
                     var tr = $("#"+id)
                     var row = table.row(tr)
                     row.child.hide();
@@ -139,7 +310,13 @@
         } );
 
 
-       $("#example_filter").empty()
+       $("#po_filter").empty()
+       $('#po-select-all').on('click', function(){
+            // Get all rows with search applied
+            var rows = table.rows({ 'search': 'applied' }).nodes();
+            // Check/uncheck checkboxes for all rows in the table
+            $('input[type="checkbox"]', rows).prop('checked', this.checked);
+        });
        var selectSelectedFilters = () => {
             var vars = {};
             var parts = window.location.href.replace(/[?&]+([^=&]+)=([^&]*)/gi, function(m,key,value) {

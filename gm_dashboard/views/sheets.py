@@ -27,6 +27,7 @@ class IndexView(TemplateView):
 class SummaryView(TemplateView):
 
     def get(self, request, sheet):
+        GMSheet.objects.filter(id=sheet).update(updated_at=datetime.now())
         sheet = GMSheet.objects.get(id=sheet)
         context =  Context(sheet).get_summary_view_context()
         context["sheet"] = sheet
@@ -90,6 +91,7 @@ def get_json_sheet(request, sheet):
         "data": list_objs,
     }
     return JsonResponse(res, safe=False)
+
 
 def sort_yearly(data):
     sorted_data = {}

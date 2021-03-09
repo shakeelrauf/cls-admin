@@ -8,7 +8,7 @@ urlpatterns = [
     path('update_sheet', update_sheet),
     path('dashboard/check_script_status', SheetStatusView.as_view()),
     path('dashboard/run_sheet_script/<sheet>', RunSheetScriptView.as_view()),
-    path('', DashboardIndexView.as_view()),
+    path('', DashboardIndexView.as_view(),name="sheet_compilation"),
     path('sheets/<sheet>', IndexView.as_view(), name='sheet_details'),
     path('sheets/<sheet>/summary', SummaryView.as_view(), name='sheet_summary'),
     path('sheets/<sheet>/summary/get_winner', get_winner, name='sheet_winner'),

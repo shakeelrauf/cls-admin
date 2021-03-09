@@ -15,9 +15,10 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path , include
-
+from .view import redirect_to_gm
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('', redirect_to_gm),
     path('gm/',include(('gm_dashboard.urls','gm_dashboard'),namespace="gm") ),
     path('fna/',include(('FnA_dashboard.urls','FnA_dashboard'),namespace="fna") ),
 ]

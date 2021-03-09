@@ -1,3 +1,4 @@
+
 {% load static %}
 
 <nav class="sidebar">
@@ -5,10 +6,16 @@
       <a href="#" class="sidebar-brand">
         <img src="{%static '/assets/images/logo.jpg'%}" width="140", alt="" />
       </a>
-      <div class="sidebar-toggler not-active">
-        <span></span>
-        <span></span>
-        <span></span>
+      <div class="dropdown">
+        <div class="sidebar-toggler not-active dropdown-toggle" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          <span></span>
+          <span></span>
+          <span></span>
+        </div>
+        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+          <a class="dropdown-item" href="{% url 'gm:sheet_compilation' %}">Compilation sheets</a>
+          <div class="dropdown-item sidebar-toggle not-active" href="#">Toggle Side Menu</div>
+        </div>
       </div>
     </div>
     <div class="sidebar-body">
@@ -35,10 +42,17 @@
           <div class="collapse" id="emails">
             <ul class="nav sub-menu">
                     {% for sheet in gm_sheets %}
+                      {% if sheet.is_seen_today %}
                         <li class="nav-item ">
+                          <a href="/gm/sheets/{{sheet.id}}/summary" class="nav-link" data-id="{{sheet.id}}">{{sheet.display_name}}</a>
+                        </li>
+                      {% else %}
+                        <li class="nav-item nonseen-report ">
                             <a href="/gm/sheets/{{sheet.id}}/summary" class="nav-link" data-id="{{sheet.id}}">{{sheet.display_name}}</a>
                         </li>
+                      {% endif %}
                     {% endfor %}
+                 
             </ul>
           </div>
         </li>
@@ -71,15 +85,21 @@
               <span class="link-title">Dashboard</span>
               <i class="link-arrow" data-feather="chevron-down"></i>
             </a>
-            <div class="collapse" id="fna">
-               <span class="link-title">
+            <div class="collapse ml-2" id="fna">
+               <span class="link-title" style="color: white;font-size: 14px;" >
                     Purchasing
                </span> 
-              <ul class="nav sub-menu">
+              <ul class="nav sub-menu ml-2 m">
                 {% for sheet in fna_sheets %}
+                  {% if sheet.is_seen_today %}
                     <li class="nav-item ">
                         <a href="/fna/sheets/{{sheet.id}}" class="nav-link" data-id="{{sheet.id}}">{{sheet.display_name}}</a>
                     </li>
+                  {% else %}
+                    <li class="nav-item nonseen-report ">
+                        <a href="/fna/sheets/{{sheet.id}}" class="nav-link" data-id="{{sheet.id}}">{{sheet.display_name}}</a>
+                    </li>
+                  {% endif %}
                 {% endfor %}
               </ul>
             </div>

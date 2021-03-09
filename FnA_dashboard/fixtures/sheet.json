@@ -54,5 +54,103 @@
     },
     "model": "gm_dashboard.sheet",
     "pk": 5
+  },
+  {
+    "fields": {
+      "display_name": "Follow Up",
+      "config_name": "FollowUp",
+      "script_path": "scripts/FollowUp.py",
+      "csv_path": "csv_files/FollowUp.csv",
+      "updated_at": "2021-10-10",
+      "created_at": "2021-10-10",
+      "sheet_type": "FnA",
+      "code": "R-3-D"
+    },
+    "model": "gm_dashboard.sheet",
+    "pk": 6
+  },
+  {
+    "fields": {
+      "display_name": "Items Vs Po older then 90",
+      "config_name": "ItemsVsPoolderthen90",
+      "script_path": "scripts/ItemsVsPoolderthen90.py",
+      "csv_path": "csv_files/ItemsVsPoolderthen90.csv",
+      "updated_at": "2021-10-10",
+      "created_at": "2021-10-10",
+      "sheet_type": "FnA",
+      "code": "R-3-E"
+    },
+    "model": "gm_dashboard.sheet",
+    "pk": 7
+  },
+  {
+    "fields": {
+      "display_name": "Preferred Vendor = Null",
+      "config_name": "PreferredVendorNull",
+      "script_path": "scripts/PreferredVendorNull.py",
+      "csv_path": "csv_files/PreferredVendorNull.csv",
+      "updated_at": "2021-10-10",
+      "created_at": "2021-10-10",
+      "sheet_type": "FnA",
+      "code": "R-3-F"
+    },
+    "model": "gm_dashboard.sheet",
+    "pk": 8
+  },
+  {
+    "fields": {
+      "display_name": "Cost Vs Sell",
+      "config_name": "CostVsSell",
+      "script_path": "scripts/CostVsSell.py",
+      "csv_path": "csv_files/CostVsSell.csv",
+      "updated_at": "2021-10-10",
+      "created_at": "2021-10-10",
+      "sheet_type": "FnA",
+      "code": "R-3-G"
+    },
+    "model": "gm_dashboard.sheet",
+    "pk": 9
+  },
+  {
+    "fields": {
+      "display_name": "C.O.A Vs Account",
+      "config_name": "COAVsAccount",
+      "script_path": "scripts/COAVsAccount.py",
+      "csv_path": "csv_files/COAVsAccount.csv",
+      "updated_at": "2021-10-10",
+      "created_at": "2021-10-10",
+      "sheet_type": "FnA",
+      "code": "R-3-H"
+    },
+    "model": "gm_dashboard.sheet",
+    "pk": 10
+  },
+  {
+    "fields": {
+      "display_name": "Non Stock",
+      "config_name": "NonStock",
+      "script_path": "scripts/NonStock.py",
+      "csv_path": "csv_files/NonStock.csv",
+      "updated_at": "2021-10-10",
+      "created_at": "2021-10-10",
+      "sheet_type": "FnA",
+      "code": "R-3-I"
+    },
+    "model": "gm_dashboard.sheet",
+    "pk": 11
+  },
+  {
+    "fields": {
+      "display_name": "RGA",
+      "config_name": "RGA",
+      "script_path": "scripts/RGA.py",
+      "csv_path": "csv_files/RGA.csv",
+      "updated_at": "2021-10-10",
+      "created_at": "2021-10-10",
+      "sheet_type": "FnA",
+      "code": "R-3-J"
+    },
+    "model": "gm_dashboard.sheet",
+    "pk": 12
   }
 ]
