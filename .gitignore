@@ -5,5 +5,3 @@
 /clssite/.env
 .DS_Store
 .DS_Store
-/__pycache__/
-clssite/__pycache__/settings.cpython-38.pyc
