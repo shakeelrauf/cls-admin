@@ -85,6 +85,7 @@ class SheetData(object):
         "R-3-B": {
             "data": f"Select {', '.join(HEADERS['R-3-B']['keys'])} FROM InvQuan LEFT JOIN ViewListItems ON InvQuan.Part = ViewListItems.[Item]",
             "count": "Select COUNT(*) FROM InvQuan LEFT JOIN ViewListItems ON InvQuan.Part = ViewListItems.[Item]",
+            "conditions": "ViewListItems.[Quantity In Stock] >= 0 AND InvQuan.[MinQuan] == 0"
         },
         "R-3-C": {
             "data": f"Select {', '.join(HEADERS['R-3-C']['keys'])} FROM Inven ",
