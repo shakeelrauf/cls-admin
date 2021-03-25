@@ -139,7 +139,7 @@ class SheetData(object):
         "R-3-J": {
             "data": f"Select {', '.join(HEADERS['R-3-J']['keys'])} FROM InvenAct GROUP BY InvenAct.Part, InvenAct.WH",
             "count": "Select COUNT(*) OVER () FROM InvenAct GROUP BY InvenAct.Part, InvenAct.WH",
-            "conditions": f"InvenAct.WH LIKE '{parsed_yaml_file['r-3-j']['WH']}'",
+            "conditions": f"InvenAct.WH LIKE '{parsed_yaml_file['r-3-j']['WH']}' AND SUM(InvenAct.[Quan])>0",
             "GROUP_BY": True
         }
     }
