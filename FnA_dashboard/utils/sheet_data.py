@@ -52,7 +52,7 @@ class SheetData(object):
         "R-3-G": {
             "keys": ["Inven.[Part]", "CAST(Inven.[Desc] AS NVARCHAR(100))", "Inven.[Bprice]", "Inven.[PriceA]",
                      "Inven.[PriceB]", "Inven.[PriceC]"],
-            "headers": ["Part", "Description", "Bprice", "PriceA", "PriceB", "PriceC"]
+            "headers": ["Part", "Description", "Base Cost", "Price A", "Price B", "Price C"]
         },
         "R-3-H": {
             "keys": ["Inven.[Part]", "CAST(Inven.[Desc] AS NVARCHAR(100))", "Inven.[CostDB]", "Inven.[SalesCR]"],
@@ -74,17 +74,18 @@ class SheetData(object):
         "R-3": {
             "data": f"SELECT {', '.join(HEADERS['R-3']['keys'])} FROM PO LEFT JOIN Vendor ON PO.Vendor = Vendor.Vendor ",
             "count": "SELECT COUNT(*) FROM PO LEFT JOIN Vendor ON PO.Vendor = Vendor.Vendor ",
-            "conditions": "PO.[OrderPlaced] NOT IN ('-1')"
+            "conditions": "PO.[OrderPlaced] NOT IN ('-1') AND PO.[Status]  = 'O'"
 
         },
         "R-3-A": {
             "data": f"Select {', '.join(HEADERS['R-3-A']['keys'])} FROM PO INNER  JOIN POLed on PO.[PO] = POLed.[PO]",
             "count": "Select COUNT(*) FROM PO INNER  JOIN POLed on PO.[PO] = POLed.[PO]",
-            "conditions": "PO.[Status]  = 'O'"
+            "conditions": "PO.[Status]  = 'O' AND (POLed.[Quan] - POLed.[Received]) > 0"
         },
         "R-3-B": {
             "data": f"Select {', '.join(HEADERS['R-3-B']['keys'])} FROM InvQuan LEFT JOIN ViewListItems ON InvQuan.Part = ViewListItems.[Item]",
             "count": "Select COUNT(*) FROM InvQuan LEFT JOIN ViewListItems ON InvQuan.Part = ViewListItems.[Item]",
+            "conditions": "ViewListItems.[Quantity In Stock] > 0.0 AND InvQuan.[MinQuan] = 0.0"
         },
         "R-3-C": {
             "data": f"Select {', '.join(HEADERS['R-3-C']['keys'])} FROM Inven ",
@@ -115,7 +116,7 @@ class SheetData(object):
         "R-3-F": {
             "data": f"Select {', '.join(HEADERS['R-3-F']['keys'])} FROM Inven LEFT JOIN Vendor on Inven.[Vendor] = Vendor.[Vendor]",
             "count": "Select COUNT(*) FROM Inven LEFT JOIN Vendor on Inven.[Vendor] = Vendor.[Vendor]",
-            "conditions": "Inven.[Type]  = 'I' AND Inven.[Vendor] IS NOT NULL"
+            "conditions": "Inven.[Type]  = 'I' AND Inven.[Vendor] IS NULL"
         }
         ,
         "R-3-G": {
