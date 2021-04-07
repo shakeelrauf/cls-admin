@@ -68,7 +68,11 @@ class SheetData(object):
             "keys": ["InvenAct.[Part]", "MAX(CAST(InvenAct.[PartDesc] AS NVARCHAR(100)))", "MAX(InvenAct.[WH])",
                      "SUM(InvenAct.[Quan])", "MIN(InvenAct.Cost)", "MAX(InvenAct.Cost)"],
             "headers": ["Part", "Description", "WH", "Quan", "Lowest Cost Purchased", "Highest Cost Purchased"]
-        }
+        },
+        "R-8": {
+            "keys": ["Warehous.[WH]","Warehous.[Desc]","Warehous.[Inactive]"],
+            "headers": ["WH ID", "Name", "Status"]
+        },
     }
     QUERIES = {
         "R-3": {
@@ -122,7 +126,7 @@ class SheetData(object):
         "R-3-G": {
             "data": f"Select {', '.join(HEADERS['R-3-G']['keys'])} FROM Inven",
             "count": "Select COUNT(*) FROM Inven",
-            "conditions": "Inven.[Bprice]  <= (Inven.[PriceA]/2)"
+            "conditions": "Inven.[Bprice]  >= (Inven.[PriceA]/2)"
         }
         ,
         "R-3-H": {
@@ -142,6 +146,12 @@ class SheetData(object):
             "count": "Select COUNT(*) OVER () FROM InvenAct GROUP BY InvenAct.Part, InvenAct.WH",
             "conditions": f"InvenAct.WH LIKE '{parsed_yaml_file['r-3-j']['WH']}' AND SUM(InvenAct.[Quan])>0",
             "GROUP_BY": True
+        }
+        ,
+        "R-8": {
+            "data": f"Select {', '.join(HEADERS['R-8']['keys'])} FROM Warehous",
+            "count": "Select COUNT(*) FROM Warehous",
+            "conditions": "Warehous.[Inactive]  != '-1'"
         }
     }
 

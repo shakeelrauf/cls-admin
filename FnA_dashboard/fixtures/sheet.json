@@ -141,7 +141,7 @@
   },
   {
     "fields": {
-      "display_name": "RGA",
+      "display_name": "RGA12",
       "config_name": "RGA",
       "script_path": "scripts/RGA.py",
       "csv_path": "csv_files/RGA.csv",
@@ -152,5 +152,19 @@
     },
     "model": "gm_dashboard.sheet",
     "pk": 12
+  },
+  {
+    "fields": {
+      "display_name": "R-8",
+      "config_name": "R-8",
+      "script_path": "scripts/RGA.py",
+      "csv_path": "csv_files/RGA.csv",
+      "updated_at": "2021-10-10",
+      "created_at": "2021-10-10",
+      "sheet_type": "FnA",
+      "code": "R-8"
+    },
+    "model": "gm_dashboard.sheet",
+    "pk": 13
   }
 ]

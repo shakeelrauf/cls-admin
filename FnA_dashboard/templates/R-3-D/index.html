@@ -46,6 +46,7 @@
         var table = $('#example').DataTable({
                     processing: true,
                     serverSide: true,
+                    "pageLength": 100,
                     order: [[3,"desc"]],
                     "ajax": {
                         url: url,

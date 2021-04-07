@@ -32,6 +32,7 @@ ALLOWED_HOSTS = ['10.100.67.8','209.91.93.167','*']
 # Application definition
 
 INSTALLED_APPS = [
+    # 'sql_server.pyodbc',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -79,11 +80,54 @@ WSGI_APPLICATION = 'clssite.wsgi.application'
 # https://docs.djangoproject.com/en/3.1/ref/settings/#databases
 
 DATABASES = {
+    # 'default': {
+    #     'ENGINE': 'django.db.backends.sqlite3',
+    #     'NAME': BASE_DIR / 'db.sqlite3',
+    # }
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
+        'ENGINE': 'sql_server.pyodbc',
+        'NAME': 'CLS_Dashboard',
+        'HOST': r'CLS-SQL1\ESC',
+        'USER': 'Python',
+        'PASSWORD': '!j4Steve12',
+        'OPTIONS': {
+            'extra_params': 'MARS_Connection=Yes',
+            'driver': 'ODBC Driver 17 for SQL Server',
+            'unicode_results': True,
+            'host_is_server': 'Yes',
+            'SQLSRV_ATTR_QUERY_TIMEOUT': 10000
+        }
+    },
 }
+
+
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'sql_server.pyodbc',
+#         'NAME': 'CLS_Dashboard',
+#         'USER': 'Python',
+#         'PASSOWRD': '!j4Steve12',
+#         'HOST': 'localhost',
+#         'PORT': '',
+
+#         'OPTIONS': {
+#             'driver': 'ODBC Driver 17 for SQL Server'
+#         }
+#     }
+# }
+
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'sql_server.pyodbc',
+#         'NAME': 'CUSDB',
+#         'HOST': 'localhost',
+#         'USER': 'SA',
+#         'PASSWORD': 'dev!secure1243!Cl$admin12ops',
+#         'OPTIONS': {
+#             'driver': 'ODBC Driver 17 for SQL Server',
+#             'unicode_results': True,
+#         }
+# }}
 
 
 # Password validation
