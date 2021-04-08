@@ -10,8 +10,9 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.1/ref/settings/
 """
 
-from pathlib import Path
 import environ
+from pathlib import Path
+from decouple import config
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -26,7 +27,7 @@ SECRET_KEY = 'xgth+n6q+=pb*dk3!jqv-k=h158s2qp!yho2qvu99lyvjm%2e-'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['10.100.67.8','209.91.93.167','*']
+ALLOWED_HOSTS = ['10.100.67.8', '209.91.93.167', '*']
 
 
 # Application definition
@@ -79,55 +80,49 @@ WSGI_APPLICATION = 'clssite.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/3.1/ref/settings/#databases
 
+# Dev Default Database
 DATABASES = {
-    # 'default': {
-    #     'ENGINE': 'django.db.backends.sqlite3',
-    #     'NAME': BASE_DIR / 'db.sqlite3',
-    # }
     'default': {
-        'ENGINE': 'sql_server.pyodbc',
-        'NAME': 'CLS_Dashboard',
-        'HOST': r'CLS-SQL1\ESC',
-        'USER': 'Python',
-        'PASSWORD': '!j4Steve12',
-        'OPTIONS': {
-            'extra_params': 'MARS_Connection=Yes',
-            'driver': 'ODBC Driver 17 for SQL Server',
-            'unicode_results': True,
-            'host_is_server': 'Yes',
-            'SQLSRV_ATTR_QUERY_TIMEOUT': 10000
-        }
-    },
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
+    }
 }
 
-
+# RDS MSSQL Server
 # DATABASES = {
 #     'default': {
 #         'ENGINE': 'sql_server.pyodbc',
 #         'NAME': 'CLS_Dashboard',
+#         'HOST': r'CLS-SQL1\ESC',
 #         'USER': 'Python',
-#         'PASSOWRD': '!j4Steve12',
-#         'HOST': 'localhost',
-#         'PORT': '',
-
+#         'PASSWORD': '!j4Steve12',
 #         'OPTIONS': {
-#             'driver': 'ODBC Driver 17 for SQL Server'
+#             'extra_params': 'MARS_Connection=Yes',
+#             'driver': 'ODBC Driver 17 for SQL Server',
+#             'unicode_results': True,
+#             'host_is_server': 'Yes',
+#             'SQLSRV_ATTR_QUERY_TIMEOUT': 10000
 #         }
 #     }
 # }
 
+# Live Deployment
 # DATABASES = {
 #     'default': {
-#         'ENGINE': 'sql_server.pyodbc',
-#         'NAME': 'CUSDB',
-#         'HOST': 'localhost',
-#         'USER': 'SA',
-#         'PASSWORD': 'dev!secure1243!Cl$admin12ops',
+#         'ENGINE': config('ADMIN_DB_ENGINE'),
+#         'NAME': config('ADMIN_DB_NAME'),
+#         'HOST': config('ADMIN_DB_HOST'),
+#         'USER': config('ADMIN_DB_USER'),
+#         'PASSWORD': config('ADMIN_DB_PASSWORD'),
 #         'OPTIONS': {
-#             'driver': 'ODBC Driver 17 for SQL Server',
-#             'unicode_results': True,
+#             'extra_params': 'MARS_Connection=Yes',
+#             'driver': config('ADMIN_DB_DRIVER'),
+#             'unicode_results': config('ADMIN_DB_UNICODE_RESULTS'),
+#             'host_is_server': 'Yes',
+#             'SQLSRV_ATTR_QUERY_TIMEOUT': 10000
 #         }
-# }}
+#     }
+# }
 
 
 # Password validation
