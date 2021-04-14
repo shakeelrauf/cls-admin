@@ -80,6 +80,7 @@ def import_file(full_path_to_module):
     except Exception as e:
         raise ImportError(e)
     return module_obj
+
 def get_method_from_sheet(sheet):
         """Dispatch method name"""
         method_name = 'get_and_save_csv_from_db_' + str(sheet.config_name)

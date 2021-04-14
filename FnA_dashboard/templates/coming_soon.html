@@ -1,0 +1,14 @@
+
+{% extends 'base.html' %}
+
+{% load cache %}
+{% load static %}
+{% cache 500 content %}
+{% block content %} 
+<div style="padding-left: 50%; height: 100px; position: absolute; top:0; bottom: 0; left: 0; right: 0; margin: auto;">
+    <h1>COMING SOON</h1>
+</div>
+{% endblock %}
+{% block js %}
+{% endblock %}
+{% endcache %}

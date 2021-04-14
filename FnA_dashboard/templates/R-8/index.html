@@ -13,7 +13,8 @@
 <div class="d-flex mb-3 mb-md-4 justify-content-between">
     <h4 class=" sheet_link" data-id="{{sheet.id}}">{{sheet.display_name}}</h4> 
 </div>
-
+<button class='btn btn-primary' id='settings'>Settings</button>
+<div id="selection" class="hide">
    <table class="table table-cls table-bordered" id="po">
        <thead><tr>
            {% for c in columns%}
@@ -23,50 +24,74 @@
        </tr></thead>
        <tbody></tbody>
   </table>
+</div>
+  <div class="" id="result">
+  <h4>Primary Tables</h4>
+  <table class="table table-cls table-bordered" id="primary">
+       <thead><tr>
+           <th>Primary Warehouse</th>
+           <th>Description</th>
+           <th>Total Inventory Items</th>
+           <th> Total Cost</th>
+       </tr></thead>
+       <tbody></tbody>
+  </table>
+  <h4>Secondary Tables</h4>
+  <table class="table table-cls table-bordered" id="secondary">
+    <thead><tr>
+        <th>Primary Warehouse</th>
+        <th>Description</th>
+        <th>Total Inventory Items</th>
+        <th> Total Cost</th>
+    </tr></thead>
+       <tbody></tbody>
+  </table>
+</div>
 {% endblock %}
 
 {% block js %}
 <script>
     var poSubmissionArray = []
-
     var url = "{% url 'fna:server_side_table' sheet.id %}"
-    var submitPosUrl = "{%url 'fna:submit_pos'%}"
+    var url2 = "{% url 'fna:server_side_table' 14 %}"
+    var url3 = "{% url 'fna:server_side_table' 15 %}"
+    var selectWarehouseUrl = "{%url 'fna:select_primary_warehouse'%}"
     var token = '{{csrf_token}}';
 
-    var editableColumns = () =>{ 
-        $(".po-edit-int").each(function() {
-            var attribute = $(this).data("attribute")
-            var part = $(this).data("part")
-            var po = $(this).data("po")
-            $(this).editable({
-                event :'click',
-                touch :true,
-                emptyMessage :false,
-                url: '/fna/update_r_3',
-                type: 'number',
-                step: 'any',
-                placement: "top",
-                pk: 1,
-                name: 'display_name',
-                params: function(params) {
-                    params["X-CSRFToken"] = token
-                    params['part'] = part;
-                    params['po'] = po;
-                    params['attribute'] = attribute;
-                    return params;
-                },
-                // success: function(response, newValue) {
-                //     window.location.reload()
-                // },
-                validate: function(value) {
-                    if($.trim(value) == '') {
-                        return 'This field is required';
-                    }
-                }
-            });    
-        });
+    // var editableColumns = () =>{ 
+    //     $(".po-edit-int").each(function() {
+    //         var attribute = $(this).data("attribute")
+    //         var part = $(this).data("part")
+    //         var po = $(this).data("po")
+    //         $(this).editable({
+    //             event :'click',
+    //             touch :true,
+    //             emptyMessage :false,
+    //             url: '/fna/update_r_3',
+    //             type: 'number',
+    //             step: 'any',
+    //             placement: "top",
+    //             pk: 1,
+    //             name: 'display_name',
+    //             params: function(params) {
+    //                 params["X-CSRFToken"] = token
+    //                 params['part'] = part;
+    //                 params['po'] = po;
+    //                 params['attribute'] = attribute;
+    //                 return params;
+    //             },
+    //             // success: function(response, newValue) {
+    //             //     window.location.reload()
+    //             // },
+    //             validate: function(value) {
+    //                 if($.trim(value) == '') {
+    //                     return 'This field is required';
+    //                 }
+    //             }
+    //         });    
+    //     });
     
-    }
+    // }
 
     $(document).ready(()=>{
         var editableFields =  () => {
@@ -97,6 +122,7 @@
             });
         }
         $('#po thead tr').clone(true).appendTo( '#po thead' );
+        
         $('#po thead tr:eq(0) th').each( function (i) {
             var title = $(this).text();
             if(title != ""){
@@ -212,16 +238,21 @@
                         $("#submitPOs").attr('disabled', true)
                     }
                 }
-                $("#submitPOs").on("click", function() {
+                
+                $("#settings").on("click", function() {
+                    $( "#result" ).addClass('hide');
+                    $( "#selection" ).removeClass('hide');
+
+
                     
                     $.ajax({
                         headers: { "X-CSRFToken": token },
-                        url: submitPosUrl,
+                        url: selectWarehouseUrl,
                         type: 'POST',
                         data: {"POS": JSON.stringify(poSubmissionArray) },
                         success: res => {
                             showSuccessMsg(`Submiting Following POS: ${poSubmissionArray}`)
-                            table.ajax.reload( null, false );
+                            
                         },
                         error: err => {
 
@@ -329,7 +360,29 @@
                         $("#"+key).trigger("change");
                 }
             }
-       }  
+       }
+       var table2 = $('#primary').DataTable({
+                    processing: true,
+                    serverSide: true,
+                    "pageLength": 100,
+                    "ajax": {
+                        url: url2,
+                        type: "GET",
+                    }
+                });  
+        var table3 = $('#secondary').DataTable({
+            processing: true,
+            serverSide: true,
+            "pageLength": 100,
+            "ajax": {
+                url: url3,
+                type: "GET",
+            }
+        });
+        $("#submitPOs").on("click", function() {
+                    $( "#selection" ).addClass('hide');
+                    $( "#result" ).removeClass('hide');
+                })
     })
 </script>
 {% endblock %}

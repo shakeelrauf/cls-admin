@@ -5,12 +5,25 @@
     <div class="navbar-content">
         <form class="search-form">
             <div class="input-group">
-                <div class="input-group-prepend">
+                <!-- <div class="input-group-prepend">
                     <div class="input-group-text">
                         <i data-feather="search"></i>
                     </div>
+                </div> -->
+                <!-- <input type="text" class="form-control" id="navbarForm" placeholder="Search here..."> -->
+                 
+                <div class="input-group-prepend">
+                    <div class="input-group-text">
+                        <label for="department_change">Select Department:</label>
+                    </div>
                 </div>
-                <input type="text" class="form-control" id="navbarForm" placeholder="Search here...">
+                <select name="department_change" id="id_department_change">
+                    <option value="Purchasing">Purchasing</option>
+                    <option value="Accounting">Accounting</option>
+                    <option value="Collections">Collections</option>
+                    <option value="FnA">FnA</option>
+                    <option value="GM">GM</option>
+                </select>
             </div>
         </form>
         <ul class="navbar-nav">

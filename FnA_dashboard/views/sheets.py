@@ -7,10 +7,17 @@ from  utils.server_db import query, update_query
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from datetime import datetime
-import json 
+import json
+from utils.department.department_info import read_write_department, Department_Data
+import environ
+env = environ.Env()
 
 class IndexView(TemplateView):
     def get(self, request, sheet):
+        print(sheet)
+        if sheet == '0':
+            return render(request,  "coming_soon.html")
+
         context = {}
         FnaSheet.objects.filter(id=sheet).update(updated_at=datetime.now())
         sheet = FnaSheet.objects.get(id=sheet)
@@ -64,9 +71,27 @@ def submit_pos(request):
     update_query(sql_query)
     return JsonResponse({"success": True}, safe=False)
 
+def select_primary_warehouse(request):
+    pos =  request.POST.get('POS', False)
+    data = tuple(json.loads(pos))
+    data = dict(data)
+    with open(env('STORAGE_DIR')+"warehouses.yml", 'w') as outfile:
+            yaml.dump(data, outfile, default_flow_style=False)
+    return JsonResponse({"success": True}, safe=False)
+
 def update_follow_up_date(request):
     po = request.POST.get("po")
     folow_up_date = request.POST.get("followUpDate")
     sql = f"UPDATE PO SET DateReq='{folow_up_date}' WHERE PO.[PO] = '{po}'"
     update_query(sql)
     return JsonResponse({"success": True , "msg": f"Successfully Updated {po} PO's Follow up Date"}, safe=False)
+
+
+def update_department(request):
+    if request.POST:
+        department = request.POST.get("department_name")
+        read_write_department(department=department, is_write=True)
+
+        return JsonResponse({
+            "success": True
+        })

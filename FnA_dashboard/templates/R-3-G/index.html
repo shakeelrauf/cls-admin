@@ -24,7 +24,9 @@
     var url = "{% url 'fna:server_side_table' sheet.id %}"
     $(document).ready(()=>{
         $('#example thead tr').clone(true).appendTo( '#example thead' );
+        count = 0;
         $('#example thead tr:eq(0) th').each( function (i) {
+            if (count < 2){
             var title = $(this).text();
             $(this).html( '<input type="text" placeholder="Search '+title+'"   id="'+title.split(' ').join('_')+'"/>' );
     
@@ -36,6 +38,12 @@
                         .draw();
                 }
             } );
+            count++;
+        }
+        else{
+            var title = $(this).text();
+            $(this).html( '' );
+        }
         } );
         var table = $('#example').DataTable({
                     processing: true,

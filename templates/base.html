@@ -43,7 +43,6 @@
 </div>
 <div>
     <div id="loading"></div>
-
 </div>
 <script src="{% static '/assets/vendors/core/core.js' %}"></script>
 <script src="{% static '/assets/vendors/bootstrap-datepicker/bootstrap-datepicker.min.js' %}"></script>
@@ -129,5 +128,23 @@
 <script>
     $(document).ready(function () {
         $('.nav-link, .collapsed').click();
+        $('#id_department_change option[value={{ department_name }}]').prop('selected', 'selected');
+    });
+    $("#id_department_change").change(function () {
+            var end = this.value;
+            var firstDropVal = $('#id_department_change option:selected').text();
+            var token = '{{csrf_token}}';
+            $.ajax({
+                headers: { "X-CSRFToken": token },
+                url: "/fna/update_department",
+                type: "POST",
+                data: {"department_name": firstDropVal},
+                success: res => {
+                    if (res["success"]){
+                        window.location = '{% url "fna_urls:department_dashboard" department_name=1234 %}'.replace(/1234/, firstDropVal);
+                    }
+                }
+            })
     });
 </script>
+ 

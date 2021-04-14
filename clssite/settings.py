@@ -68,7 +68,8 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
                 'gm_dashboard.context_processors.gm_sheets',
-                'gm_dashboard.context_processors.fna_sheets'
+                'gm_dashboard.context_processors.fna_sheets',
+                'gm_dashboard.context_processors.sidebar_menu_items',
             ],
         },
     },
