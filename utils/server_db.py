@@ -10,7 +10,7 @@ def query(sql_string):
     database = 'CLSESC' 
     username = 'Python' 
     password = '!j4Steve12' 
-    cnxn = pyodbc.connect('DRIVER={SQL Server};SERVER='+server+';DATABASE='+database+';UID='+username+';PWD='+ password)
+    cnxn = pyodbc.connect('DRIVER={ODBC Driver 17 for SQL Server};SERVER='+server+';DATABASE='+database+';UID='+username+';PWD='+ password)
     cursor = cnxn.cursor()
     cursor.execute(sql_string)
     sql_result = list(cursor.fetchall())
