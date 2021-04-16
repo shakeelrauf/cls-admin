@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+{% load cache %}
+{% load static %}
+{% cache 500 content %}
+{% block content %}
+<style>
+    .nav-category {
+        font-size: 12px;
+    }
+
+    th {
+        font-size: 12px;
+        font-weight: bold;
+        width: 350px;
+    }
+    th+th {
+    width: auto;
+    }
+
+
+</style>
+
+<div class="d-flex mb-3 mb-md-4 justify-content-between">
+    <h4>Dashboard</h4>
+</div>
+
+<div style="overflow-x:auto; width: 50%">
+    {% for head, data in columns.items %}
+    <table class="table table-cls table-bordered" name="{{ head }}" id="id_datatable">
+        <thead>
+            <tr>
+                <th>{{ head }}</th>
+                <th>Actual</th>
+                <th>Target</th>
+                <th>Streek</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for d in data %}
+                <tr>
+                    <td>{{d.display_name}}</td>
+                    <td>{{d.actual}}</td>
+                    <td>0</td>
+                    <td>0</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% endfor %}
+</div>
+{% endblock %}
+{% block js %}
+<script>
+
+</script>
+{% endblock %}
+{% endcache %}

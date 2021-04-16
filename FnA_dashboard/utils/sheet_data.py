@@ -73,6 +73,14 @@ class SheetData(object):
             "keys": ["Warehous.[WH]","Warehous.[Desc]","Warehous.[Inactive]"],
             "headers": ["WH ID", "Name", "Status"]
         },
+        "R-8-P": {
+            "keys": ["Warehous.WH", "Warehous.[Desc]", "SUM(CAST(InvenAct.Count AS DECIMAL(10,2)))",  "SUM(CAST(InvenAct.Quan AS DECIMAL(10,2)))"],
+            "headers": ["Primary Warehouse", "Description", "Total Inventory Items", "Total Cost"]
+        },
+        "R-8-I": {
+            "keys": ["Warehous.WH", "Warehous.[Desc]", "SUM(CAST(InvenAct.Count AS DECIMAL(10,2)))",  "SUM(CAST(InvenAct.Quan AS DECIMAL(10,2)))"],
+            "headers": ["Primary Warehouse", "Description", "Total Inventory Items", "Total Cost"]
+        },
     }
     QUERIES = {
         "R-3": {
@@ -152,6 +160,18 @@ class SheetData(object):
             "data": f"Select {', '.join(HEADERS['R-8']['keys'])} FROM Warehous",
             "count": "Select COUNT(*) FROM Warehous",
             "conditions": "Warehous.[Inactive]  != '-1'"
+        },
+        "R-8-P": {
+            "data": f"Select {', '.join(HEADERS['R-8-P']['keys'])} FROM Warehous INNER JOIN InvenAct ON Warehous.WH = InvenAct.WH GROUP BY Warehous.WH,Warehous.[Desc] ",
+            "count": "Select COUNT(Warehous.WH) FROM Warehous INNER JOIN InvenAct ON Warehous.WH = InvenAct.WH GROUP BY Warehous.WH,Warehous.[Desc]",
+            "conditions": "Warehous.WH IN (0000, 0002,0003)",
+            "GROUP_BY": True
+        },
+        "R-8-I": {
+            "data": f"Select {', '.join(HEADERS['R-8-I']['keys'])} FROM Warehous INNER JOIN InvenAct ON Warehous.WH = InvenAct.WH GROUP BY Warehous.WH,Warehous.[Desc] ",
+            "count": "Select COUNT(Warehous.WH) FROM Warehous INNER JOIN InvenAct ON Warehous.WH = InvenAct.WH GROUP BY Warehous.WH,Warehous.[Desc]",
+            "conditions": "Warehous.WH NOT IN (0000, 0002,0003)",
+            "GROUP_BY": True
         }
     }
 
