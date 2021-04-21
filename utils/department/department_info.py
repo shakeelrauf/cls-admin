@@ -5,31 +5,31 @@ class Department_Data:
 
     HEADERS = {
         "Purchasing": {
-            "Scorecard": ["Purchasing Report", "Parts On Order", "Stock vs M/M", "Follow Up", "Items Vs PO's older then 90", "Non Stock", "RGA12"],
-            "Complients": ["Base Cost = 0", "Preferred Vendor = Null", "Cost Vs Sell", "Min/Max <> Sales Trends"],
-            "headers": ["Scorecard", "Complients"]
+            "Scorecard": ["Purchasing Report", "Parts On Order", "Stock vs M/M", "Follow Up", "Items Vs PO's older then 90", "Non Stock", "RGA"],
+            "Compliance": ["Base Cost = 0", "Preferred Vendor = Null", "Cost Vs Sell", "Min/Max <> Sales Trends"],
+            "headers": ["Scorecard", "Compliance"]
         },
         "Accounting": {
             "AR Scorecard": ["PO need", "inbox AR unread", "Uninvoiced"],
-            "AR Complients": ["Appliance of accounting", "C.O.A Vs Account", "Invoice COG=0", "Missing Customer Emails"],
+            "AR Compliance": ["Appliance of accounting", "C.O.A Vs Account", "Invoice COG=0", "Missing Customer Emails"],
             "AP Scorecard": ["Account payable"],
-            "AP Complients": ["Missing reciets"],
-            "headers": ["AR Scorecard", "AR Complients", "AP Scorecard", "AP Complients"]
+            "AP Compliance": ["Missing reciets"],
+            "headers": ["AR Scorecard", "AR Compliance", "AP Scorecard", "AP Compliance"]
         },
         "Collections": {
             "Scorecard": ["Collections", "30 Day Rolling", "Last 365 COD"],
-            "Complients": ["Missing Customer Emails"],
-            "headers": ["Scorecard", "Complients"]
+            "Compliance": ["Missing Customer Emails"],
+            "headers": ["Scorecard", "Compliance"]
         },
         "FnA": {
             "Scorecard": ["420 Report", "420 Trending", "Cash report", "Daily cash in", "Daily cash out"],
-            "Complients": ["weekly vs previous year", "monthly vs previous year", "quater vs previous", "ytd vs prior"],
-            "headers": ["Scorecard", "Complients"]
+            "Compliance": ["weekly vs previous year", "monthly vs previous year", "quater vs previous", "ytd vs prior"],
+            "headers": ["Scorecard", "Compliance"]
         },
         "GM": {
             "Scorecard": ["Actual Vs Quoted", "Actual Vs Invoiced", "Daily margin"],
-            "Complients": [],
-            "headers": ["Scorecard", "Complients"]
+            "Compliance": [],
+            "headers": ["Scorecard", "Compliance"]
         },
     }
     
