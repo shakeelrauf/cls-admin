@@ -141,7 +141,7 @@
   },
   {
     "fields": {
-      "display_name": "RGA12",
+      "display_name": "RGA",
       "config_name": "RGA",
       "script_path": "scripts/RGA.py",
       "csv_path": "csv_files/RGA.csv",
@@ -155,7 +155,7 @@
   },
   {
     "fields": {
-      "display_name": "R-8",
+      "display_name": "420 Report",
       "config_name": "R-8",
       "script_path": "scripts/RGA.py",
       "csv_path": "csv_files/RGA.csv",
@@ -194,5 +194,33 @@
     },
     "model": "gm_dashboard.sheet",
     "pk": 15
+  },
+  {
+    "fields": {
+      "display_name": "Missing Customer Emails",
+      "config_name": "R-5",
+      "script_path": "scripts/RGA.py",
+      "csv_path": "csv_files/RGA.csv",
+      "updated_at": "2021-10-10",
+      "created_at": "2021-10-10",
+      "sheet_type": "FnA",
+      "code": "R-5"
+    },
+    "model": "gm_dashboard.sheet",
+    "pk": 16
+  },
+  {
+    "fields": {
+      "display_name": "R-25",
+      "config_name": "R-25",
+      "script_path": "scripts/RGA.py",
+      "csv_path": "csv_files/RGA.csv",
+      "updated_at": "2021-10-10",
+      "created_at": "2021-10-10",
+      "sheet_type": "FnA",
+      "code": "R-25"
+    },
+    "model": "gm_dashboard.sheet",
+    "pk": 17
   }
 ]

@@ -9,6 +9,7 @@ from django.views.decorators.csrf import csrf_exempt
 from datetime import datetime
 import json
 from utils.department.department_info import read_write_department, Department_Data
+from utils.r8.R8_info import read_write_warehouse
 import environ
 env = environ.Env()
 
@@ -73,10 +74,12 @@ def submit_pos(request):
 
 def select_primary_warehouse(request):
     pos =  request.POST.get('POS', False)
-    data = tuple(json.loads(pos))
-    data = dict(data)
-    with open(env('STORAGE_DIR')+"warehouses.yml", 'w') as outfile:
-            yaml.dump(data, outfile, default_flow_style=False)
+    data = str(pos)
+    # data = dict(data)
+    # with open(env('STORAGE_DIR')+"warehouses.yml", 'w') as outfile:
+    #         yaml.dump(data, outfile, default_flow_style=False)
+    print(data)
+    read_write_warehouse(data,True)
     return JsonResponse({"success": True}, safe=False)
 
 def update_follow_up_date(request):

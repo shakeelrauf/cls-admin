@@ -55,6 +55,7 @@
     var url = "{% url 'fna:server_side_table' sheet.id %}"
     var url2 = "{% url 'fna:server_side_table' 14 %}"
     var url3 = "{% url 'fna:server_side_table' 15 %}"
+    
     var selectWarehouseUrl = "{%url 'fna:select_primary_warehouse'%}"
     var token = '{{csrf_token}}';
 
@@ -382,6 +383,20 @@
         $("#submitPOs").on("click", function() {
                     $( "#selection" ).addClass('hide');
                     $( "#result" ).removeClass('hide');
+                    debugger;
+                    $.ajax({
+                        headers: { "X-CSRFToken": token },
+                        url: selectWarehouseUrl,
+                        type: 'POST',
+                        data: {"POS": poSubmissionArray.toString() },
+                        success: res => {
+                            showSuccessMsg(`Submiting Following POS: ${poSubmissionArray}`)
+                            table.ajax.reload( null, false );
+                        },
+                        error: err => {
+
+                        }
+                    })
                 })
     })
 </script>

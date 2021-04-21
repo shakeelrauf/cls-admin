@@ -2,12 +2,15 @@ from utils.server_db import query
 import pdb
 import yaml
 import os
+from utils.r8.R8_info import read_warehouse
+
 
 settings_dir = os.path.dirname(__file__)
 PROJECT_ROOT = os.path.abspath(os.path.dirname(settings_dir))
 config_file = os.path.join(PROJECT_ROOT, 'config.yml')
 a_yaml_file = open(config_file)
 parsed_yaml_file = yaml.load(a_yaml_file, Loader=yaml.FullLoader)
+primary_warehouse_list = read_warehouse()
 
 
 class SheetData(object):
@@ -22,7 +25,7 @@ class SheetData(object):
         "R-3-A": {
             "keys": ["POLed.[Part]", "CAST(POLed.[Desc] AS NVARCHAR(100))", "POLed.[Quan]", "POLed.[Received]",
                      "(POLed.[Quan] - POLed.[Received]) ", "PO.[PO]", "FORMAT (PO.Date, 'yyyy-MM-dd ')",
-                     "FORMAT (PO.DateReq, 'yyyy-MM-dd ')", "PO.[ShipName]"],
+                     "FORMAT (PO.DateReq, 'yyyy-MM-dd ')", "Vendor.[Company]"],
             "headers": ["Part Number", "Description", "Qty Ordered", "Qty Received", "Balance", "PO Number",
                         "Entry Date", "Expected Date", "Vendor Name"]
         },
@@ -81,16 +84,23 @@ class SheetData(object):
             "keys": ["Warehous.WH", "Warehous.[Desc]", "SUM(CAST(InvenAct.Count AS DECIMAL(10,2)))",  "SUM(CAST(InvenAct.Quan AS DECIMAL(10,2)))"],
             "headers": ["Primary Warehouse", "Description", "Total Inventory Items", "Total Cost"]
         },
+        "R-5": {
+            "keys": ["Customer.CustNo", "LastName", "Customer.Add1"],
+            "headers": ["Customer Number", "Customer Name", "Address"]
+        },
+        "R-25": {
+            "keys": ["LastName","Dispatch","FORMAT(RecDate, 'yyyy-MM-dd ')"],
+            "headers": ["Customer Name", "Dispatch Number", "Received Date"]
+        },
     }
     QUERIES = {
         "R-3": {
             "data": f"SELECT {', '.join(HEADERS['R-3']['keys'])} FROM PO LEFT JOIN Vendor ON PO.Vendor = Vendor.Vendor ",
             "count": "SELECT COUNT(*) FROM PO LEFT JOIN Vendor ON PO.Vendor = Vendor.Vendor ",
             "conditions": "PO.[OrderPlaced] NOT IN ('-1') AND PO.[Status]  = 'O'"
-
         },
         "R-3-A": {
-            "data": f"Select {', '.join(HEADERS['R-3-A']['keys'])} FROM PO INNER  JOIN POLed on PO.[PO] = POLed.[PO]",
+            "data": f"Select {', '.join(HEADERS['R-3-A']['keys'])} FROM PO INNER  JOIN POLed on PO.[PO] = POLed.[PO] INNER  JOIN Vendor on PO.Vendor = Vendor.[Vendor] ",
             "count": "Select COUNT(*) FROM PO INNER  JOIN POLed on PO.[PO] = POLed.[PO]",
             "conditions": "PO.[Status]  = 'O' AND (POLed.[Quan] - POLed.[Received]) > 0"
         },
@@ -103,14 +113,12 @@ class SheetData(object):
             "data": f"Select {', '.join(HEADERS['R-3-C']['keys'])} FROM Inven ",
             "count": "Select COUNT(*) FROM Inven",
             "conditions": "Inven.[BPrice] <= 0 AND Inven.[Type] = 'I'"
-        }
-        ,
+        },
         "R-3-D": {
             "data": f"Select {', '.join(HEADERS['R-3-D']['keys'])} FROM PO LEFT JOIN Vendor on PO.[Vendor] = Vendor.[Vendor]",
             "count": "Select COUNT(*) FROM PO LEFT JOIN Vendor on PO.[Vendor] = Vendor.[Vendor]",
             "conditions": "PO.[Status]  = 'O'"
-        }
-        ,
+        },
         "R-3-E": {
             "data": f'''WITH VenPartsFirst AS (SELECT *,ROW_NUMBER() OVER(PARTITION BY VenParts.vendor ORDER BY VenParts.[DateLastPurchase] DESC) AS row_number FROM VenParts 
                             WHERE VenParts.[DateLastPurchase] IS NOT NULL
@@ -123,39 +131,33 @@ class SheetData(object):
                         ) 
                         Select COUNT(*) FROM VenPartsFirst  LEFT JOIN Vendor on VenPartsFirst.Vendor = Vendor.Vendor''',
             "conditions": "row_number = 1"
-        }
-        ,
+        },
         "R-3-F": {
             "data": f"Select {', '.join(HEADERS['R-3-F']['keys'])} FROM Inven LEFT JOIN Vendor on Inven.[Vendor] = Vendor.[Vendor]",
             "count": "Select COUNT(*) FROM Inven LEFT JOIN Vendor on Inven.[Vendor] = Vendor.[Vendor]",
             "conditions": "Inven.[Type]  = 'I' AND Inven.[Vendor] IS NULL"
-        }
-        ,
+        },
         "R-3-G": {
             "data": f"Select {', '.join(HEADERS['R-3-G']['keys'])} FROM Inven",
             "count": "Select COUNT(*) FROM Inven",
             "conditions": "Inven.[Bprice]  >= (Inven.[PriceA]/2)"
-        }
-        ,
+        },
         "R-3-H": {
             "data": f"Select {', '.join(HEADERS['R-3-H']['keys'])} FROM Inven",
             "count": "Select COUNT(*) FROM Inven",
             "conditions": "Inven.[SalesCR] != 'BAC' AND CONVERT(INT, REPLACE(Inven.[CostDB], CHAR(0), ''))  - CONVERT(INT, REPLACE(Inven.[SalesCR], CHAR(0), ''))  <> 6000"
-        }
-        ,
+        },
         "R-3-I": {
             "data": f"Select {', '.join(HEADERS['R-3-I']['keys'])} FROM ViewListItems LEFT JOIN InvQuan ON ViewListItems.[Item] = InvQuan.[Part]",
             "count": "Select COUNT(*) FROM ViewListItems LEFT JOIN InvQuan ON ViewListItems.[Item] = InvQuan.[Part]",
             "conditions": f"InvQuan.[WH] = '{parsed_yaml_file['r-3-i']['WH']}' AND ViewListItems.[Quantity in Stock] > 0 AND (InvQuan.[Aisle] = null OR InvQuan.[Aisle] = 'SO')"
-        }
-        ,
+        },
         "R-3-J": {
             "data": f"Select {', '.join(HEADERS['R-3-J']['keys'])} FROM InvenAct GROUP BY InvenAct.Part, InvenAct.WH",
             "count": "Select COUNT(*) OVER () FROM InvenAct GROUP BY InvenAct.Part, InvenAct.WH",
             "conditions": f"InvenAct.WH LIKE '{parsed_yaml_file['r-3-j']['WH']}' AND SUM(InvenAct.[Quan])>0",
             "GROUP_BY": True
-        }
-        ,
+        },
         "R-8": {
             "data": f"Select {', '.join(HEADERS['R-8']['keys'])} FROM Warehous",
             "count": "Select COUNT(*) FROM Warehous",
@@ -163,16 +165,26 @@ class SheetData(object):
         },
         "R-8-P": {
             "data": f"Select {', '.join(HEADERS['R-8-P']['keys'])} FROM Warehous INNER JOIN InvenAct ON Warehous.WH = InvenAct.WH GROUP BY Warehous.WH,Warehous.[Desc] ",
-            "count": "Select COUNT(Warehous.WH) FROM Warehous INNER JOIN InvenAct ON Warehous.WH = InvenAct.WH GROUP BY Warehous.WH,Warehous.[Desc]",
-            "conditions": "Warehous.WH IN (0000, 0002,0003)",
+            "count": "Select COUNT(Warehous.WH) FROM Warehous INNER JOIN InvenAct ON Warehous.WH = InvenAct.WH GROUP BY Warehous.WH",
+            "conditions": f"Warehous.WH IN {primary_warehouse_list}",
             "GROUP_BY": True
         },
         "R-8-I": {
-            "data": f"Select {', '.join(HEADERS['R-8-I']['keys'])} FROM Warehous INNER JOIN InvenAct ON Warehous.WH = InvenAct.WH GROUP BY Warehous.WH,Warehous.[Desc] ",
-            "count": "Select COUNT(Warehous.WH) FROM Warehous INNER JOIN InvenAct ON Warehous.WH = InvenAct.WH GROUP BY Warehous.WH,Warehous.[Desc]",
-            "conditions": "Warehous.WH NOT IN (0000, 0002,0003)",
+            "data": f"Select {', '.join(HEADERS['R-8-I']['keys'])} FROM Warehous INNER JOIN InvenAct ON Warehous.WH = InvenAct.WH GROUP BY Warehous.WH,Warehous.[Desc],Warehous.[Inactive] ",
+            "count": "Select COUNT(Warehous.WH) FROM Warehous INNER JOIN InvenAct ON Warehous.WH = InvenAct.WH GROUP BY Warehous.WH,Warehous.[Desc],Warehous.[Inactive]",
+            "conditions": f"Warehous.WH NOT IN {primary_warehouse_list} AND Warehous.[Inactive]  != '-1'",
             "GROUP_BY": True
-        }
+        },
+        "R-5": {
+            "data": f"Select {', '.join(HEADERS['R-5']['keys'])} FROM Customer INNER JOIN Location ON Customer.CustNo = Location.CustNo",
+            "count": "Select COUNT(*) FROM Customer INNER JOIN Location ON Customer.CustNo = Location.CustNo",
+            "conditions": "Email='' AND Email2='' AND Email3='' AND Email4='' AND Email5='' AND Email6='' AND Customer.CustNo !='0000000'"
+        },
+        "R-25": {
+            "data": f"Select {', '.join(HEADERS['R-25']['keys'])} FROM Dispatch INNER JOIN Customer ON Customer.CustNo = Dispatch.CustNo",
+            "count": "Select COUNT(*) FROM Dispatch INNER JOIN Customer ON Customer.CustNo = Dispatch.CustNo",
+            "conditions": "Complete IS NOT NULL AND Invoiced = '0'"
+        },
     }
 
     def get_headers(self):
