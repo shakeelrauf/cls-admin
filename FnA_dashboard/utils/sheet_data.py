@@ -145,7 +145,15 @@ class SheetData(object):
         "R-3-H": {
             "data": f"Select {', '.join(HEADERS['R-3-H']['keys'])} FROM Inven",
             "count": "Select COUNT(*) FROM Inven",
-            "conditions": "Inven.[SalesCR] != 'BAC' AND CONVERT(INT, REPLACE(Inven.[CostDB], CHAR(0), ''))  - CONVERT(INT, REPLACE(Inven.[SalesCR], CHAR(0), ''))  <> 6000"
+            "conditions": """Inven.[SalesCR] != 'BAC' AND 
+            (CONVERT(INT,
+                    CASE
+                    WHEN IsNumeric(CONVERT(VARCHAR(12), Inven.[CostDB])) = 1 THEN CONVERT(VARCHAR(12),Inven.[CostDB])
+                    ELSE 0 END) - 
+            CONVERT(INT,
+                    CASE
+                    WHEN IsNumeric(CONVERT(VARCHAR(12), Inven.[SalesCR])) = 1 THEN CONVERT(VARCHAR(12),Inven.[SalesCR])
+                    ELSE 0 END))  <> 6000"""
         },
         "R-3-I": {
             "data": f"Select {', '.join(HEADERS['R-3-I']['keys'])} FROM ViewListItems LEFT JOIN InvQuan ON ViewListItems.[Item] = InvQuan.[Part]",
